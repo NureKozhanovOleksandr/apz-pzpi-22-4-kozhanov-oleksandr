@@ -38,15 +38,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    try {
-      await api.post('/logout');
-    } catch (error) {
-      console.error("Logout failed:", error.message);
-    } finally {
-      setIsAuthenticated(false);
-      setUserData(null);
-      navigate('/');
-    }
+    localStorage.removeItem('accessToken');
+    setIsAuthenticated(false);
+    setUserData(null);
+    navigate('/');
   };
 
   return (

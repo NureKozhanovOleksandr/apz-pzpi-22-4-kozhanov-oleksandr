@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const authMiddleware = require('./middleware/authMiddleware');
 const roleMiddleware = require('./middleware/roleMiddleware');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 app.use(express.json());
@@ -12,6 +13,13 @@ app.use(morgan('dev'));
 connectDB();
 
 app.use(bodyParser.json());
+
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 const animalRoutes = require('./routes/animals');
 const healthRecordRoutes = require('./routes/healthRecords');

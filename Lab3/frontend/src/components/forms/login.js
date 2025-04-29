@@ -12,14 +12,16 @@ export const LoginForm = ({ changeLanguage }) => {
 
   const handleLogin = async (data, setStatus) => {
     try {
-      const response = await api.post("/login", data);
+      const response = await api.post('/api/auth/login', data);
       if (response.status === 200) {
+        localStorage.setItem('accessToken', response.data.token);
         setStatus({ message: t("login.success"), type: "success" });
         setTimeout(() => {
           login();
         }, 1000);
       }
     } catch (error) {
+      console.error("Login error:", error.response?.data || error.message);
       setStatus({
         message: error.response?.data?.message || t("login.failed"),
         type: "error",
@@ -36,8 +38,8 @@ export const LoginForm = ({ changeLanguage }) => {
       onSubmit={handleLogin}
       fields={[
         {
-          name: "email",
-          type: "email",
+          name: "username",
+          type: "text",
           placeholder: t("login.emailPlaceholder"),
           validation: { required: t("login.emailRequired") },
         },
