@@ -13,14 +13,13 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
     const vets = await User.find({ role: 'admin' });
-    if (vets.length === 1 && vets[0].username === 'admin') {
-      return res.status(200).json([]);
-    }
-    vets.forEach(vet => {
+    const updatedVets = vets.filter(vet => vet.username !== 'admin');
+    updatedVets.forEach(vet => {
       vet.ownerData = undefined;
+      vet.password = undefined;
       vet.__v = undefined;
     });
-    res.json(vets);
+    res.json(updatedVets);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

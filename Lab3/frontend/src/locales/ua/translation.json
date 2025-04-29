@@ -1,8 +1,10 @@
 {
   "navigation": {
     "vets": "ветеринари",
-    "admins": "адміністратори",
-    "subscriptions": "підписки",
+    "animals": "тварини",
+    "appointments": "прийоми",
+    "owners": "власники",
+    "healthRecords": "медичні записи",
     "logout": "вийти",
     "oldPassword": "старий пароль",
     "newPassword": "новий пароль",
@@ -65,11 +67,6 @@
     "adminAddedSuccessfully": "Адміністратора успішно додано!",
     "failedToRegisterAdmin": "Не вдалося зареєструвати адміністратора"
   },
-  "admins": {
-    "name": "Ім'я",
-    "email": "Email",
-    "createdAt": "Дата створення"
-  },
   "vets": {
     "username": "Ім'я користувача",
     "specialization": "Спеціалізація",
@@ -82,46 +79,75 @@
     "confirm": "Підтвердити",
     "cancel": "Скасувати"
   },
-  "customers": {
-    "title": "Користувачі",
+  "animals": {
     "name": "Ім'я",
-    "email": "Email",
-    "currentSubscription": "Поточний план підписки",
-    "createdAt": "Дата створення",
-    "goToUser": "До підписок",
-    "deleteUser": "Видалити",
-    "userDeleted": "Користувача успішно видалено",
-    "deleteUserConfirmation": "Ви впевнені, що хочете видалити цього користувача?",
+    "species": "Вид",
+    "breed": "Порода",
+    "age": "Вік",
+    "weight": "Вага",
+    "ownerId": "ID власника",
+    "lastVisit": "Останній візит",
+    "deleteAnimal": "Видалити тварину",
+    "animalDeleted": "Тварину успішно видалено",
+    "deleteAnimalConfirmation": "Ви впевнені, що хочете видалити цю тварину?",
     "confirm": "Підтвердити",
-    "cancel": "Скасувати"
+    "cancel": "Скасувати",
+    "noBreed": "Без породи",
+    "unknownAge": "Невідомий вік",
+    "unknownWeight": "Невідома вага",
+    "noVisit": "Відсутні візити"
+  },
+  "appointments": {
+    "animalId": "ID тварини",
+    "vetId": "ID ветеринара",
+    "date": "Дата",
+    "reason": "Причина",
+    "diagnosis": "Діагноз",
+    "treatment": "Лікування",
+    "notes": "Нотатки",
+    "status": "Статус",
+    "deleteAppointment": "Видалити запис",
+    "appointmentDeleted": "Запис успішно видалено",
+    "deleteAppointmentConfirmation": "Ви впевнені, що хочете видалити цей запис?",
+    "confirm": "Підтвердити",
+    "cancel": "Скасувати",
+    "noDiagnosis": "Без діагнозу",
+    "noTreatment": "Без лікування",
+    "noNotes": "Без нотаток"
+  },
+  "owners": {
+    "username": "Ім'я користувача",
+    "email": "Електронна пошта",
+    "address": "Адреса",
+    "animals": "Тварини",
+    "deleteOwner": "Видалити власника",
+    "ownerDeleted": "Власника успішно видалено",
+    "deleteOwnerConfirmation": "Ви впевнені, що хочете видалити цього власника?",
+    "confirm": "Підтвердити",
+    "cancel": "Скасувати",
+    "noEmail": "Без email",
+    "noAddress": "Без адреси",
+    "noAnimals": "Без тварин"
+  },
+  "healthRecords": {
+    "animalId": "ID тварини",
+    "date": "Дата",
+    "temperature": "Температура",
+    "deleteRecord": "Видалити запис",
+    "recordDeleted": "Медичний запис успішно видалено",
+    "deleteRecordConfirmation": "Ви впевнені, що хочете видалити цей медичний запис?",
+    "confirm": "Підтвердити",
+    "cancel": "Скасувати",
+    "noTemperature": "Без температури"
   },
   "notification": {
     "failedToDeleteUser": "Не вдалося видалити користувача",
     "passwordUpdated": "Пароль успішно оновлено",
-    "passwordUpdateFailed": "Не вдалося оновити пароль"
-  },
-  "subscriptions": {
-    "title": "Підписки",
-    "name": "Назва",
-    "maxHomes": "Макс. будинків",
-    "maxSensors": "Макс. сенсорів",
-    "price": "Ціна ($)",
-    "duration": "Тривалість (дні)",
-    "edit": "Редагувати",
-    "planUpdated": "План підписки успішно оновлено",
-    "addNewPlan": "Додати новий план"
-  },
-  "userSubscriptions": {
-    "title": "Підписки користувача",
-    "subscriptionPlan": "План підписки",
-    "startDate": "Дата початку",
-    "endDate": "Дата закінчення",
-    "status": "Статус",
-    "active": "Активна",
-    "inactive": "Неактивна",
-    "cancel": "Скасувати",
-    "subscriptionCanceled": "Підписка успішно скасована",
-    "cancelFailed": "Не вдалося скасувати підписку"
+    "passwordUpdateFailed": "Не вдалося оновити пароль",
+    "failedToDeleteAnimal": "Не вдалося видалити тварину",
+    "failedToDeleteAppointment": "Не вдалося видалити запис",
+    "failedToDeleteOwner": "Не вдалося видалити власника",
+    "failedToDeleteRecord": "Не вдалося видалити медичний запис"
   },
   "tablePage": {
     "loading": "Завантаження...",

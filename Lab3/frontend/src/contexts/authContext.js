@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
 
         if (response.status === 200) {
           setIsAuthenticated(true);
-          setUserData(response.data.user);
+          setUserData(response.data.data);
           if (location.pathname === '/') {
             navigate('/vets');
           }

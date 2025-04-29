@@ -2,9 +2,10 @@ import './App.css';
 import Navigation from './components/navigation/navigation';
 import NotFound from './pages/notFound/notFound';
 import Vets from './pages/vets';
-import Admins from './pages/admins';
-import Subscriptions from './pages/subscriptions';
-import UserSubscriptions from './pages/user-subscriptions';
+import Animals from './pages/animals';
+import Appointments from './pages/appointments';
+import Owners from './pages/owners';
+import HealthRecords from './pages/healthRecords';
 import { Routes, Route } from "react-router-dom";
 import { useEffect, useContext } from 'react';
 import { useCookies } from 'react-cookie';
@@ -32,9 +33,10 @@ function App() {
       <Routes>
         <Route path='/' element={<LoginForm changeLanguage={changeLanguage} />} />
         <Route path='/vets' element={<Vets />} />        
-        <Route path="/customers/user/:userId" element={<UserSubscriptions />} />
-        <Route path='/admins' element={<Admins />} />
-        <Route path='/subscriptions' element={<Subscriptions />} />
+        <Route path='/animals' element={<Animals />} />
+        <Route path='/appointments' element={<Appointments />} />
+        <Route path='/owners' element={<Owners />} />
+        <Route path='/health-records' element={<HealthRecords />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
     </div>

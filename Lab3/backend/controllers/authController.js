@@ -105,7 +105,7 @@ exports.iotAuth = async (req, res) => {
 
 /**
  * @function verify
- * @description Verify the token and return user data
+ * @description Verify the token and return user or device data
  * @param {Object} req - Request
  * @param {Object} res - Response
  */
@@ -119,13 +119,21 @@ exports.verify = async (req, res) => {
 
   try {
     const decoded = jwt.verify(token, 'secret');
-    const user = await User.findById(decoded.user.id).select('-password');
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+
+    if (decoded.user) {
+      const user = await User.findById(decoded.user.id).select('-password');
+      if (!user) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      return res.json({ type: 'user', data: user });
+    } else {
+      return res.status(400).json({ message: 'Invalid token payload' });
     }
-    res.json({ user });
   } catch (err) {
     console.error('Token verification error:', err.message);
-    res.status(401).json({ message: 'Token is not valid' });
+    if (err.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Token has expired' });
+    }
+    return res.status(401).json({ message: 'Token is not valid' });
   }
 };

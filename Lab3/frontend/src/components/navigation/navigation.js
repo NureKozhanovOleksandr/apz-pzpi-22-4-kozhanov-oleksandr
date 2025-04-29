@@ -144,22 +144,34 @@ const Navigation = ({ changeLanguage }) => {
               </div>
             )}
           </div>
-          <div className={`link-container ${getActiveLink('/admins')}`}>
-            <Link to="/admins" className="link" onClick={handleLinkClick}>
+          <div className={`link-container ${getActiveLink('/animals')}`}>
+            <Link to="/animals" className="link" onClick={handleLinkClick}>
               <GrUserAdmin className='icon' />
-              {t('navigation.admins')}
+              {t('navigation.animals')}
             </Link>
           </div>
-          <div className={`link-container ${getActiveLink('/subscriptions')}`}>
-            <Link to="/subscriptions" className="link" onClick={handleLinkClick}>
+          <div className={`link-container ${getActiveLink('/appointments')}`}>
+            <Link to="/appointments" className="link" onClick={handleLinkClick}>
               <MdPayment className='icon' />
-              {t('navigation.subscriptions')}
+              {t('navigation.appointments')}
+            </Link>
+          </div>
+          <div className={`link-container ${getActiveLink('/owners')}`}>
+            <Link to="/owners" className="link" onClick={handleLinkClick}>
+              <MdPayment className='icon' />
+              {t('navigation.owners')}
+            </Link>
+          </div>
+          <div className={`link-container ${getActiveLink('/health-records')}`}>
+            <Link to="/health-records" className="link" onClick={handleLinkClick}>
+              <MdPayment className='icon' />
+              {t('navigation.healthRecords')}
             </Link>
           </div>
         </div>
         <div className='user-panel'>
           <div className='user-header'>
-            <p className='name'>{userData?.name || ''}</p>
+            <p className='name'>{userData?.username || ''}</p>
             <p className='email'>{userData?.email || ''}</p>
             <IoIosArrowDown
               className={`icon ${isAccordionOpen ? 'open' : ''}`}

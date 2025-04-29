@@ -1,8 +1,10 @@
 {
   "navigation": {
     "vets": "vets",
-    "admins": "admins",
-    "subscriptions": "subscriptions",
+    "animals": "animals",
+    "appointments": "appointments",
+    "owners": "owners",
+    "healthRecords": "health records",
     "logout": "logout",
     "oldPassword": "old password",
     "newPassword": "new password",
@@ -65,11 +67,6 @@
     "adminAddedSuccessfully": "Admin added successfully!",
     "failedToRegisterAdmin": "Failed to register admin"
   },
-  "admins": {
-    "name": "Name",
-    "email": "Email",
-    "createdAt": "Created at"
-  },
   "vets": {
     "username": "Username",
     "specialization": "Specialization",
@@ -82,46 +79,75 @@
     "confirm": "Confirm",
     "cancel": "Cancel"
   },
-  "customers": {
-    "title": "Customers",
+  "animals": {
     "name": "Name",
-    "email": "Email",
-    "currentSubscription": "Current subscription",
-    "createdAt": "Created at",
-    "goToUser": "Go to user",
-    "deleteUser": "Delete user",
-    "userDeleted": "User deleted successfully",
-    "deleteUserConfirmation": "Are you sure you want to delete this user?",
+    "species": "Species",
+    "breed": "Breed",
+    "age": "Age",
+    "weight": "Weight",
+    "ownerId": "Owner ID",
+    "lastVisit": "Last Visit",
+    "deleteAnimal": "Delete Animal",
+    "animalDeleted": "Animal successfully deleted",
+    "deleteAnimalConfirmation": "Are you sure you want to delete this animal?",
     "confirm": "Confirm",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "noBreed": "No breed",
+    "unknownAge": "Unknown age",
+    "unknownWeight": "Unknown weight",
+    "noVisit": "No visits"
+  },
+  "appointments": {
+    "animalId": "Animal ID",
+    "vetId": "Vet ID",
+    "date": "Date",
+    "reason": "Reason",
+    "diagnosis": "Diagnosis",
+    "treatment": "Treatment",
+    "notes": "Notes",
+    "status": "Status",
+    "deleteAppointment": "Delete Appointment",
+    "appointmentDeleted": "Appointment successfully deleted",
+    "deleteAppointmentConfirmation": "Are you sure you want to delete this appointment?",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "noDiagnosis": "No diagnosis",
+    "noTreatment": "No treatment",
+    "noNotes": "No notes"
+  },
+  "owners": {
+    "username": "Username",
+    "email": "Email",
+    "address": "Address",
+    "animals": "Animals",
+    "deleteOwner": "Delete Owner",
+    "ownerDeleted": "Owner successfully deleted",
+    "deleteOwnerConfirmation": "Are you sure you want to delete this owner?",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "noEmail": "No email",
+    "noAddress": "No address",
+    "noAnimals": "No animals"
+  },
+  "healthRecords": {
+    "animalId": "Animal ID",
+    "date": "Date",
+    "temperature": "Temperature",
+    "deleteRecord": "Delete Record",
+    "recordDeleted": "Health record successfully deleted",
+    "deleteRecordConfirmation": "Are you sure you want to delete this health record?",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "noTemperature": "No temperature"
   },
   "notification": {
     "failedToDeleteUser": "Failed to delete user",
     "passwordUpdated": "Password updated successfully",
-    "passwordUpdateFailed": "Failed to update password"
-  },
-  "subscriptions": {
-    "title": "Subscriptions",
-    "name": "Name",
-    "maxHomes": "Max homes",
-    "maxSensors": "Max sensors",
-    "price": "Price ($)",
-    "duration": "Duration (days)",
-    "edit": "Edit",
-    "planUpdated": "Subscription plan updated successfully",
-    "addNewPlan": "Add new plan"
-  },
-  "userSubscriptions": {
-    "title": "User Subscriptions",
-    "subscriptionPlan": "Subscription plan",
-    "startDate": "Start date",
-    "endDate": "End date",
-    "status": "Status",
-    "active": "Active",
-    "inactive": "Not active",
-    "cancel": "Cancel",
-    "subscriptionCanceled": "Subscription canceled successfully",
-    "cancelFailed": "Failed to cancel subscription"
+    "passwordUpdateFailed": "Failed to update password",
+    "failedToDeleteAnimal": "Failed to delete animal",
+    "failedToDeleteAppointment": "Failed to delete appointment",
+    "failedToDeleteOwner": "Failed to delete owner",
+    "failedToDeleteRecord": "Failed to delete health record"
   },
   "tablePage": {
     "loading": "Loading...",
