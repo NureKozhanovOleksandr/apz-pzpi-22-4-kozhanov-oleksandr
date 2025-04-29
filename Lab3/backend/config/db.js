@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 /**
  * @function connectDB
@@ -6,7 +7,7 @@ const mongoose = require('mongoose');
  */
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb://localhost:27017/animal_care_system', {
+    await mongoose.connect(process.env.MONGO_URI, {
     });
     console.log('Connected');
   } catch (err) {

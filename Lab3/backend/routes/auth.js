@@ -1,15 +1,19 @@
 const express = require('express');
 const { check } = require('express-validator');
 const authController = require('../controllers/authController');
+const authMiddleware = require('../middleware/authMiddleware');
+const roleMiddleware = require('../middleware/roleMiddleware');
 const router = express.Router();
 
 /**
  * @route POST /api/auth/register
  * @desc Register a new user
- * @access Public
+ * @access Private (admin)
  */
 router.post(
   '/register',
+  authMiddleware,
+  roleMiddleware(['admin']),
   [
     check('username', 'Username is required').not().isEmpty(),
     check('password', 'Password is required').isLength({ min: 6 }),

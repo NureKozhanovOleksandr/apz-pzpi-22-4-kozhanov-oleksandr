@@ -32,7 +32,7 @@ exports.register = async (req, res) => {
 
     // Generate JWT token
     const payload = { user: { id: user.id, role: user.role } };
-    jwt.sign(payload, 'secret', { expiresIn: 360000 }, (err, token) => {
+    jwt.sign(payload, 'secret', { expiresIn: '1h' }, (err, token) => {
       if (err) throw err;
       res.json({ token });
     });
@@ -97,7 +97,7 @@ exports.iotAuth = async (req, res) => {
     }
 
     const payload = { device: { id: device._id, role: 'iot' } };
-    jwt.sign(payload, 'secret', { expiresIn: 360000 }, (err, token) => {
+    jwt.sign(payload, 'secret', { expiresIn: "1h" }, (err, token) => {
       if (err) throw err;
       res.json({ token });
     });

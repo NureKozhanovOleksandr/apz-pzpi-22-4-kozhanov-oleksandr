@@ -5,6 +5,9 @@ const appointmentSchema = new mongoose.Schema({
   vetId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vet', required: true },
   date: { type: Date, required: true },
   reason: { type: String, required: true },
+  diagnosis: { type: String, },
+  treatment: { type: String },
+  notes: { type: String },
   status: { type: String, required: true }
 });
 
