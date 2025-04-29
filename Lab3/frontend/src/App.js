@@ -1,7 +1,7 @@
 import './App.css';
 import Navigation from './components/navigation/navigation';
 import NotFound from './pages/notFound/notFound';
-import Customers from './pages/customers';
+import Vets from './pages/vets';
 import Admins from './pages/admins';
 import Subscriptions from './pages/subscriptions';
 import UserSubscriptions from './pages/user-subscriptions';
@@ -31,7 +31,7 @@ function App() {
       {isAuthenticated && <Navigation changeLanguage={changeLanguage} />}
       <Routes>
         <Route path='/' element={<LoginForm changeLanguage={changeLanguage} />} />
-        <Route path='/customers' element={<Customers />} />        
+        <Route path='/vets' element={<Vets />} />        
         <Route path="/customers/user/:userId" element={<UserSubscriptions />} />
         <Route path='/admins' element={<Admins />} />
         <Route path='/subscriptions' element={<Subscriptions />} />

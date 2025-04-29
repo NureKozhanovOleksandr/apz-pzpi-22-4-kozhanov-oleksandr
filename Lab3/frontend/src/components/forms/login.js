@@ -12,7 +12,7 @@ export const LoginForm = ({ changeLanguage }) => {
 
   const handleLogin = async (data, setStatus) => {
     try {
-      const response = await api.post('/api/auth/login', data);
+      const response = await api.post('/auth/login', data);
       if (response.status === 200) {
         localStorage.setItem('accessToken', response.data.token);
         setStatus({ message: t("login.success"), type: "success" });

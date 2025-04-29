@@ -7,9 +7,9 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 /**
  * @route GET /api/healthrecords/all
  * @desc Get all health records
- * @access Private (owner, vet)
+ * @access Private (admin)
  */
-router.get('/all', authMiddleware, roleMiddleware(['owner', 'vet']), async (req, res) => {
+router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
     const healthRecords = await HealthRecord.find();
     res.json(healthRecords);
@@ -21,9 +21,9 @@ router.get('/all', authMiddleware, roleMiddleware(['owner', 'vet']), async (req,
 /**
  * @route GET /api/healthrecords/:id
  * @desc Get health record by ID
- * @access Private (owner, vet)
+ * @access Private (owner, admin)
  */
-router.get('/:id', authMiddleware, roleMiddleware(['owner', 'vet']), async (req, res) => {
+router.get('/:id', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
   try {
     const healthRecord = await HealthRecord.findById(req.params.id);
     if (!healthRecord) return res.status(404).json({ message: 'Health record not found' });
@@ -34,37 +34,11 @@ router.get('/:id', authMiddleware, roleMiddleware(['owner', 'vet']), async (req,
 });
 
 /**
- * @route POST /api/healthrecords/add
- * @desc Create a new health record
- * @access Private (vet)
- */
-router.post('/add', authMiddleware, roleMiddleware(['vet']), async (req, res) => {
-  const healthRecord = new HealthRecord({
-    animalId: req.body.animalId,
-    date: req.body.date,
-    diagnosis: req.body.diagnosis,
-    treatment: req.body.treatment,
-    notes: req.body.notes,
-    vetId: req.body.vetId,
-    temperature: req.body.temperature,
-    pulse: req.body.pulse,
-    bloodSugar: req.body.bloodSugar
-  });
-
-  try {
-    await healthRecord.save();
-    res.status(201).json({ message: 'Health record added successfully' });
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-/**
  * @route PUT /api/healthrecords/:id
  * @desc Update a health record
- * @access Private (vet)
+ * @access Private (admin)
  */
-router.put('/:id', authMiddleware, roleMiddleware(['vet']), async (req, res) => {
+router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
     const healthRecord = await HealthRecord.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!healthRecord) return res.status(404).json({ message: 'Health record not found' });
@@ -77,9 +51,9 @@ router.put('/:id', authMiddleware, roleMiddleware(['vet']), async (req, res) => 
 /**
  * @route DELETE /api/healthrecords/:id
  * @desc Delete a health record
- * @access Private (vet)
+ * @access Private (admin)
  */
-router.delete('/:id', authMiddleware, roleMiddleware(['vet']), async (req, res) => {
+router.delete('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
     const healthRecord = await HealthRecord.findById(req.params.id);
     if (!healthRecord) return res.status(404).json({ message: 'Health record not found' });
@@ -95,9 +69,9 @@ router.delete('/:id', authMiddleware, roleMiddleware(['vet']), async (req, res) 
 /**
  * @route GET /api/healthrecords/check-critical/:animalId
  * @desc Check a critical health messages
- * @access Private (vet)
+ * @access Private (admin)
  */
-router.get('/check-critical/:animalId', authMiddleware, roleMiddleware('vet'), async (req, res) => {
+router.get('/check-critical/:animalId', authMiddleware, roleMiddleware('admin'), async (req, res) => {
   try {
     const healthRecords = await HealthRecord.find({ animalId: req.params.animalId });
     const criticalMessages = [];
@@ -123,9 +97,9 @@ router.get('/check-critical/:animalId', authMiddleware, roleMiddleware('vet'), a
 /**
  * @route GET /api/healthrecords/temperature/average/:animalId
  * @desc Get average temperature for an animal
- * @access Private (owner, vet)
+ * @access Private (owner, admin)
  */
-router.get('/temperature/average/:animalId', authMiddleware, roleMiddleware(['owner', 'vet']), async (req, res) => {
+router.get('/temperature/average/:animalId', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
   try {
     const healthRecords = await HealthRecord.find({ animalId: req.params.animalId });
     const temperatures = healthRecords.map(record => record.temperature);
@@ -139,9 +113,9 @@ router.get('/temperature/average/:animalId', authMiddleware, roleMiddleware(['ow
 /**
  * @route GET /api/healthrecords/temperature/variance/:animalId
  * @desc Get temperature variance for an animal
- * @access Private (owner, vet)
+ * @access Private (owner, admin)
  */
-router.get('/temperature/variance/:animalId', authMiddleware, roleMiddleware(['owner', 'vet']), async (req, res) => {
+router.get('/temperature/variance/:animalId', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
   try {
     const healthRecords = await HealthRecord.find({ animalId: req.params.animalId });
     const temperatures = healthRecords.map(record => record.temperature);

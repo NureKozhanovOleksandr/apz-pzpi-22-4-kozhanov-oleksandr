@@ -105,7 +105,7 @@ const Navigation = ({ changeLanguage }) => {
     if (getActiveLink('/customers') === 'active') return t('navigation.customers');
     if (getActiveLink('/admins') === 'active') return t('navigation.admins');
     if (getActiveLink('/subscriptions') === 'active') return t('navigation.subscriptions');
-    return 'safe home';
+    return 'vet clinic';
   };
 
   const handleLinkClick = () => {
@@ -123,19 +123,19 @@ const Navigation = ({ changeLanguage }) => {
       <div className='logo'>
         <RxHamburgerMenu className="burger-menu-icon" onClick={toggleMenu} />
         <img src={logo} alt='company-logo' className="desktop-logo" />
-        <span className="desktop-text">safe home</span>
+        <span className="desktop-text">vet clinic</span>
         <span className="mobile-title">{getPageTitle()}</span>
       </div>
       <div className='navigation-container'>
         <div className='links'>
-          <div className={`link-container ${getActiveLink('/customers')}`}>
-            <Link to="/customers" className="link" onClick={handleLinkClick}>
+          <div className={`link-container ${getActiveLink('/vets')}`}>
+            <Link to="/vets" className="link" onClick={handleLinkClick}>
               {!userEmail ? (
                 <FiUsers className='icon' />
               ) : (
                 <IoArrowBackOutline className='icon arrow' />
               )}
-              {t('navigation.customers')}
+              {t('navigation.vets')}
             </Link>
             {userEmail && (
               <div className="user-email">

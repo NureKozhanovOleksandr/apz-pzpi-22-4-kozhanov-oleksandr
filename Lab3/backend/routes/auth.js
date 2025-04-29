@@ -39,15 +39,23 @@ router.post(
 /**
  * @route POST /api/auth/iot
  * @desc Authenticate an IOT device
- * @access Public
+ * @access Private (admin)
  */
 router.post(
-  '/iot',
+  '/iot',  
+  roleMiddleware(['admin']),
   [
     check('deviceId', 'Device ID is required').not().isEmpty(),
     check('secret', 'Secret is required').not().isEmpty()
   ],
   authController.iotAuth
 );
+
+/**
+ * @route GET /api/auth/verify
+ * @desc Verify JWT token and return user/device info
+ * @access Public
+ */
+router.get('/verify', authMiddleware, authController.verify);
 
 module.exports = router;

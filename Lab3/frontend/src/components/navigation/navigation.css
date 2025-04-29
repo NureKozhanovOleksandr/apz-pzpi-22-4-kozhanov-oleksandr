@@ -9,6 +9,7 @@
   min-width: fit-content;
   height: calc(100vh - 4rem);
   box-sizing: border-box;
+  margin-right: 0;
 }
 
 .navigation .navigation-container {

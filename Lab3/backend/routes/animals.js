@@ -8,9 +8,9 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 /**
  * @route GET /api/animals/all
  * @desc Get all animals
- * @access Private (owner, vet)
+ * @access Private (owner, admin)
  */
-router.get('/all', authMiddleware, roleMiddleware(['owner', 'vet']), async (req, res) => {
+router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
     const animals = await Animal.find();
     res.json(animals);
@@ -22,9 +22,9 @@ router.get('/all', authMiddleware, roleMiddleware(['owner', 'vet']), async (req,
 /**
  * @route GET /api/animals/:id
  * @desc Get animal by ID
- * @access Private (owner, vet)
+ * @access Private (owner, admin)
  */
-router.get('/:id', authMiddleware, roleMiddleware(['owner', 'vet']), async (req, res) => {
+router.get('/:id', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
   try {
     const animal = await Animal.findById(req.params.id);
     if (!animal) return res.status(404).json({ message: 'Animal not found' });
@@ -37,9 +37,9 @@ router.get('/:id', authMiddleware, roleMiddleware(['owner', 'vet']), async (req,
 /**
  * @route POST /api/animals/add
  * @desc Create a new animal
- * @access Private (vet)
+ * @access Private (admin)
  */
-router.post('/add', authMiddleware, roleMiddleware(['vet']), async (req, res) => {
+router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   const animal = new Animal({
     name: req.body.name,
     species: req.body.species,
@@ -54,7 +54,7 @@ router.post('/add', authMiddleware, roleMiddleware(['vet']), async (req, res) =>
   try {
     const newAnimal = await animal.save();
 
-    const owner = await User.findOne({ _id: req.body.ownerId, role: 'owner' });
+    const owner = await User.findOne({ _id: req.body.ownerId, role: 'admin' });
     if (owner) {
       owner.ownerData.animals.push(newAnimal._id);
       await owner.save();
@@ -69,9 +69,9 @@ router.post('/add', authMiddleware, roleMiddleware(['vet']), async (req, res) =>
 /**
  * @route PUT /api/animals/:id
  * @desc Update an animal
- * @access Private (vet)
+ * @access Private (admin)
  */
-router.put('/:id', authMiddleware, roleMiddleware(['vet']), async (req, res) => {
+router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
     const animal = await Animal.findByIdAndUpdate(req.params.id, req.body, { new: true });
     if (!animal) return res.status(404).json({ message: 'Animal not found' });
@@ -84,9 +84,9 @@ router.put('/:id', authMiddleware, roleMiddleware(['vet']), async (req, res) => 
 /**
  * @route DELETE /api/animals/:id
  * @desc Delete an animal
- * @access Private (vet)
+ * @access Private (admin)
  */
-router.delete('/:id', authMiddleware, roleMiddleware(['vet']), async (req, res) => {
+router.delete('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
     const animal = await Animal.findById(req.params.id);
     if (!animal) return res.status(404).json({ message: 'Animal not found' });

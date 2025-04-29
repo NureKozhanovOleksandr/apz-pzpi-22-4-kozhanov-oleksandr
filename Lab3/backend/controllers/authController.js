@@ -27,7 +27,7 @@ exports.register = async (req, res) => {
       role,
       email,
       ownerData: role === 'owner' ? ownerData : undefined,
-      vetData: role === 'vet' ? vetData : undefined
+      vetData: role === 'admin' ? vetData : undefined
     });
 
     await user.save();
@@ -45,14 +45,14 @@ exports.register = async (req, res) => {
  * @param {Object} res - Response
  */
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ username });
     if (!user) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
@@ -100,5 +100,32 @@ exports.iotAuth = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
+  }
+};
+
+/**
+ * @function verify
+ * @description Verify the token and return user data
+ * @param {Object} req - Request
+ * @param {Object} res - Response
+ */
+exports.verify = async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ message: 'No token, authorization denied' });
+  }
+
+  const token = authHeader.split(' ')[1];
+
+  try {
+    const decoded = jwt.verify(token, 'secret');
+    const user = await User.findById(decoded.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({ user });
+  } catch (err) {
+    console.error('Token verification error:', err.message);
+    res.status(401).json({ message: 'Token is not valid' });
   }
 };

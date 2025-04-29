@@ -1,5 +1,3 @@
-const jwt = require('jsonwebtoken');
-
 /**
  * Middleware to check the authorization token
  * @param {Object} req - Express request object

@@ -13,6 +13,10 @@ router.get('/all', authMiddleware, roleMiddleware(['admin', 'vet']), async (req,
   try {
     const owners = await User.find({ role: 'owner' });
     res.json(owners);
+    owners.forEach(owner => {
+      owner.vetData = undefined;
+      owner.__v = undefined;
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 const User = require('../Models/User');
 const authMiddleware = require('../middleware/authMiddleware');
@@ -11,7 +12,14 @@ const roleMiddleware = require('../middleware/roleMiddleware');
  */
 router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const vets = await User.find({ role: 'vet' });
+    const vets = await User.find({ role: 'admin' });
+    if (vets.length === 1 && vets[0].username === 'admin') {
+      return res.status(200).json([]);
+    }
+    vets.forEach(vet => {
+      vet.ownerData = undefined;
+      vet.__v = undefined;
+    });
     res.json(vets);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -25,7 +33,7 @@ router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) =
  */
 router.get('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const vet = await User.findOne({ _id: req.params.id, role: 'vet' });
+    const vet = await User.findOne({ _id: req.params.id, role: 'admin' });
     if (!vet) return res.status(404).json({ message: 'Vet not found' });
     res.json(vet);
   } catch (err) {
@@ -42,11 +50,13 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) 
   const { username, password, email, specialization, contactInfo } = req.body;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     const newVet = new User({
       username,
-      password,
+      password: hashedPassword,
       email,
-      role: 'vet',
+      role: 'admin',
       vetData: { specialization, contactInfo }
     });
 
@@ -83,7 +93,7 @@ router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) =
  */
 router.delete('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const vet = await User.findOne({ _id: req.params.id, role: 'vet' });
+    const vet = await User.findOne({ _id: req.params.id, role: 'admin' });
     if (!vet) return res.status(404).json({ message: 'Vet not found' });
 
     await vet.deleteOne();

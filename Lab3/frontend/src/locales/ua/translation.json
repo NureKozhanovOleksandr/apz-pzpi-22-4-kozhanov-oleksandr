@@ -1,6 +1,6 @@
 {
   "navigation": {
-    "customers": "клієнти",
+    "vets": "ветеринари",
     "admins": "адміністратори",
     "subscriptions": "підписки",
     "logout": "вийти",
@@ -69,6 +69,18 @@
     "name": "Ім'я",
     "email": "Email",
     "createdAt": "Дата створення"
+  },
+  "vets": {
+    "username": "Ім'я користувача",
+    "specialization": "Спеціалізація",
+    "contactInfo": "Контактна інформація",
+    "email": "Електронна пошта",
+    "goToVet": "Перейти до ветеринара",
+    "deleteVet": "Видалити ветеринара",
+    "vetDeleted": "Ветеринара успішно видалено",
+    "deleteVetConfirmation": "Ви впевнені, що хочете видалити цього ветеринара?",
+    "confirm": "Підтвердити",
+    "cancel": "Скасувати"
   },
   "customers": {
     "title": "Користувачі",

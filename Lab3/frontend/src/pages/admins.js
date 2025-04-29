@@ -33,7 +33,7 @@ const Admins = () => {
   return (
     <>
       <TablePage
-        apiEndpoint="/admin/admins"
+        apiEndpoint="/admins/all"
         columnDefs={columnDefs}
         transformData={transformData}
         showActions={true}
