@@ -1,0 +1,29 @@
+.app {
+  min-height: 100vh;
+  width: 100vw;
+  background: #C7DBFF;
+  overflow: hidden;
+  display: flex;
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button, a {
+  user-select: none;
+}
+
+@media screen and (max-width: 768px) {
+  .app {
+    flex-direction: column;
+    align-items: center;
+  }  
+}
