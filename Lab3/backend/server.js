@@ -5,6 +5,7 @@ const authMiddleware = require('./middleware/authMiddleware');
 const roleMiddleware = require('./middleware/roleMiddleware');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const ensureAdminExists = require('./createAdmin');
 
 const app = express();
 app.use(express.json());
@@ -20,6 +21,8 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
 }));
+
+ensureAdminExists();
 
 const animalRoutes = require('./routes/animals');
 const healthRecordRoutes = require('./routes/healthRecords');

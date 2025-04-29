@@ -11,31 +11,27 @@ const Device = require('../Models/Device');
  * @param {Object} res - Response
  */
 exports.register = async (req, res) => {
-  // Validate input
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { username, password, role } = req.body;
+  const { username, password, role, email, ownerData, vetData } = req.body;
 
   try {
-    // Check if user already exists
     let user = await User.findOne({ username });
     if (user) {
-      return res.status(400).json({ msg: 'User already exists' });
+      return res.status(400).json({ message: 'User already exists' });
     }
 
-    // Create new user
-    user = new User({ username, password, role });
-    await user.save();
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Generate JWT token
-    const payload = { user: { id: user.id, role: user.role } };
-    jwt.sign(payload, 'secret', { expiresIn: '1h' }, (err, token) => {
-      if (err) throw err;
-      res.json({ token });
+    user = new User({
+      username,
+      password: hashedPassword,
+      role,
+      email,
+      ownerData: role === 'owner' ? ownerData : undefined,
+      vetData: role === 'vet' ? vetData : undefined
     });
+
+    await user.save();
+    res.status(201).json({ message: 'User registered successfully' });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -58,12 +54,12 @@ exports.login = async (req, res) => {
   try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     const payload = { user: { id: user._id, role: user.role } };
@@ -93,7 +89,7 @@ exports.iotAuth = async (req, res) => {
   try {
     const device = await Device.findOne({ _id: deviceId, secret });
     if (!device) {
-      return res.status(400).json({ msg: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
 
     const payload = { device: { id: device._id, role: 'iot' } };

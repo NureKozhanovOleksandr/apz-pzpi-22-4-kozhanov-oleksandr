@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Animal = require('../Models/Animal');
-const Owner = require('../Models/Owner');
+const User = require('../Models/User');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
@@ -54,9 +54,9 @@ router.post('/add', authMiddleware, roleMiddleware(['vet']), async (req, res) =>
   try {
     const newAnimal = await animal.save();
 
-    const owner = await Owner.findById(req.body.ownerId);
+    const owner = await User.findOne({ _id: req.body.ownerId, role: 'owner' });
     if (owner) {
-      owner.animals.push(newAnimal._id);
+      owner.ownerData.animals.push(newAnimal._id);
       await owner.save();
     }
 

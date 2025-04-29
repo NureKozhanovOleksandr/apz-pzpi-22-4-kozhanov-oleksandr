@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Owner = require('./Owner');
+const User = require('./User');
 
 const animalSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -7,15 +7,15 @@ const animalSchema = new mongoose.Schema({
   breed: { type: String },
   age: { type: Number },
   weight: { type: Number },
-  ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Owner' },
+  ownerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   lastVisit: { type: Date }
 });
 
 animalSchema.pre('deleteOne', { document: true, query: false }, async function(next) {
   try {
-    const owner = await Owner.findById(this.ownerId);
-    if (owner) {
-      owner.animals.pull(this._id);
+    const owner = await User.findById(this.ownerId);
+    if (owner && owner.role === 'owner' && owner.ownerData && Array.isArray(owner.ownerData.animals)) {
+      owner.ownerData.animals.pull(this._id);
       await owner.save();
     }
     next();

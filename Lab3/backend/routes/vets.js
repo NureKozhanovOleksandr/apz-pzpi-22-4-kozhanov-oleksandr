@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Vet = require('../Models/Vet');
+const User = require('../Models/User');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
@@ -11,7 +11,7 @@ const roleMiddleware = require('../middleware/roleMiddleware');
  */
 router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const vets = await Vet.find();
+    const vets = await User.find({ role: 'vet' });
     res.json(vets);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -23,9 +23,9 @@ router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) =
  * @desc Get vet by ID
  * @access Private (admin)
  */
-router.get('/:id', authMiddleware, roleMiddleware(['admin']),  async (req, res) => {
+router.get('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const vet = await Vet.findById(req.params.id);
+    const vet = await User.findOne({ _id: req.params.id, role: 'vet' });
     if (!vet) return res.status(404).json({ message: 'Vet not found' });
     res.json(vet);
   } catch (err) {
@@ -38,15 +38,19 @@ router.get('/:id', authMiddleware, roleMiddleware(['admin']),  async (req, res) 
  * @desc Add a new vet
  * @access Private (admin)
  */
-router.post('/add', authMiddleware, roleMiddleware(['admin']),  async (req, res) => {
-  const vet = new Vet({
-    name: req.body.name,
-    specialization: req.body.specialization,
-    contactInfo: req.body.contactInfo
-  });
+router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+  const { username, password, email, specialization, contactInfo } = req.body;
 
   try {
-    await vet.save();
+    const newVet = new User({
+      username,
+      password,
+      email,
+      role: 'vet',
+      vetData: { specialization, contactInfo }
+    });
+
+    await newVet.save();
     res.status(201).json({ message: 'Vet added successfully' });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -58,10 +62,14 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']),  async (req, res)
  * @desc Update a vet
  * @access Private (admin)
  */
-router.put('/:id', authMiddleware, roleMiddleware(['admin']),  async (req, res) => {
+router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const vet = await Vet.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!vet) return res.status(404).json({ message: 'Vet not found' });
+    const updatedVet = await User.findOneAndUpdate(
+      { _id: req.params.id, role: 'vet' },
+      { ...req.body },
+      { new: true }
+    );
+    if (!updatedVet) return res.status(404).json({ message: 'Vet not found' });
     res.json({ message: 'Vet updated successfully' });
   } catch (err) {
     res.status(400).json({ message: err.message });
@@ -73,10 +81,13 @@ router.put('/:id', authMiddleware, roleMiddleware(['admin']),  async (req, res) 
  * @desc Delete a vet
  * @access Private (admin)
  */
-router.delete('/:id', authMiddleware, roleMiddleware(['admin']),  async (req, res) => {
+router.delete('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const vet = await Vet.findByIdAndDelete(req.params.id);
+    const vet = await User.findOne({ _id: req.params.id, role: 'vet' });
     if (!vet) return res.status(404).json({ message: 'Vet not found' });
+
+    await vet.deleteOne();
+
     res.json({ message: 'Vet deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });

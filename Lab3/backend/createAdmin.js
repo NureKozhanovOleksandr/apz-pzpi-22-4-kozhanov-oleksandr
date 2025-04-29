@@ -5,17 +5,6 @@ require('dotenv').config();
 
 const createAdmin = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
-
-    const existingAdmin = await User.findOne({ role: 'admin' });
-    if (existingAdmin) {
-      console.log('Admin already exists:', existingAdmin.username);
-      return;
-    }
-
     const hashedPassword = await bcrypt.hash('12345678', 10);
 
     const admin = new User({
@@ -25,12 +14,27 @@ const createAdmin = async () => {
     });
 
     await admin.save();
-    console.log('Admin created successfully:', admin.username);
+    console.log('Admin added successfully:', admin.username);
   } catch (error) {
     console.error('Error creating admin:', error.message);
-  } finally {
-    mongoose.connection.close();
   }
 };
 
-createAdmin();
+const ensureAdminExists = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+
+    const adminCount = await User.countDocuments({ role: 'admin' });
+    if (adminCount === 0) {
+      console.log('No admins found. Creating default admin...');
+      await createAdmin();
+    }
+  } catch (err) {
+    console.error('Error checking admin existence:', err.message);
+  }
+};
+
+module.exports = ensureAdminExists;
