@@ -51,7 +51,7 @@ router.get('/:id', authMiddleware, roleMiddleware(['owner', 'admin']), async (re
  */
 router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const owner = await User.findOne({ username: req.body.ownerUsername, role: 'owner' });
+    const owner = await User.findOne({ _id: req.body.ownerId, role: 'owner' });
     if (!owner) return res.status(404).json({ message: 'Owner not found' });
 
     const animal = new Animal({
