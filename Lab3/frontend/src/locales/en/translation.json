@@ -152,7 +152,9 @@
     "usernameRequired": "Username is required",
     "email": "Email",
     "invalidEmail": "Invalid email format",
-    "address": "Address"
+    "address": "Address",
+    "failedToSaveOwner": "Failed to save owner",
+    "ownerUpdatedSuccessfully": "Owner updated successfully!"
   },
   "healthRecords": {
     "animalId": "Animal ID",

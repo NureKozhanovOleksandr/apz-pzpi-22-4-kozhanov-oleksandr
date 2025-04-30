@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import FormTemplate from "./template";
 import api from "../../configs/api";
 
-const EditOwnerForm = ({ initialData = null, onBack, onSuccess }) => {
+const EditOwnerForm = ({ initialData, onBack, onSuccess }) => {
   const { t } = useTranslation();
 
   const handleSubmit = async (data, setStatus) => {
@@ -10,14 +10,12 @@ const EditOwnerForm = ({ initialData = null, onBack, onSuccess }) => {
       const formattedData = {
         username: data.username,
         email: data.email,
-        address: data.address,
-        animals: data.animals.split(",").map((animal) => animal.trim()),
-      };
+        address: data.address
+      }
 
-      if (initialData) {
-        await api.put(`/owners/${initialData._id}`, formattedData);
-        setStatus({ message: t("editOwnerForm.ownerUpdatedSuccessfully"), type: "success" });
-      } 
+      await api.put(`/owners/${initialData._id}`, formattedData);
+      setStatus({ message: t("editOwnerForm.ownerUpdatedSuccessfully"), type: "success" });
+
       setTimeout(() => {
         onSuccess();
         onBack();
@@ -32,8 +30,8 @@ const EditOwnerForm = ({ initialData = null, onBack, onSuccess }) => {
 
   return (
     <FormTemplate
-      title={initialData ? t("editOwnerForm.editOwner") : t("editOwnerForm.addNewOwner")}
-      buttonText={initialData ? t("editOwnerForm.saveChanges") : t("editOwnerForm.addOwner")}
+      title={t("editOwnerForm.editOwner")}
+      buttonText={t("editOwnerForm.saveChanges")}
       onSubmit={handleSubmit}
       onBack={onBack}
       fields={[
@@ -41,7 +39,7 @@ const EditOwnerForm = ({ initialData = null, onBack, onSuccess }) => {
           name: "username",
           type: "text",
           label: t("editOwnerForm.username"),
-          defaultValue: initialData?.username || "",
+          defaultValue: initialData.username,
           validation: { required: t("editOwnerForm.usernameRequired") },
           showLabel: true,
         },
@@ -49,7 +47,7 @@ const EditOwnerForm = ({ initialData = null, onBack, onSuccess }) => {
           name: "email",
           type: "email",
           label: t("editOwnerForm.email"),
-          defaultValue: initialData?.email || "",
+          defaultValue: initialData.email,
           validation: {
             pattern: {
               value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
@@ -62,7 +60,7 @@ const EditOwnerForm = ({ initialData = null, onBack, onSuccess }) => {
           name: "address",
           type: "text",
           label: t("editOwnerForm.address"),
-          defaultValue: initialData?.ownerData?.address || "",
+          defaultValue: initialData.address,
           showLabel: true,
         },
       ]}

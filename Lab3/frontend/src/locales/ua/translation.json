@@ -152,7 +152,9 @@
     "usernameRequired": "Ім'я є обов'язковим",
     "email": "Електронна пошта",
     "invalidEmail": "Невірний формат електронної пошти",
-    "address": "Адреса"
+    "address": "Адреса",
+    "failedToSaveOwner": "Не вдалося зберегти власника",
+    "ownerUpdatedSuccessfully": "Власника успішно оновлено!"
   },
   "healthRecords": {
     "animalId": "ID тварини",

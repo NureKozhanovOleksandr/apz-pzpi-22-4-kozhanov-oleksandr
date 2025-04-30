@@ -68,9 +68,11 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) 
  */
 router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
+    const { username, email, address } = req.body;
+
     const updatedOwner = await User.findOneAndUpdate(
       { _id: req.params.id, role: 'owner' },
-      { ...req.body },
+      { username, email, ownerData: { address } },
       { new: true }
     );
     if (!updatedOwner) return res.status(404).json({ message: 'Owner not found' });
