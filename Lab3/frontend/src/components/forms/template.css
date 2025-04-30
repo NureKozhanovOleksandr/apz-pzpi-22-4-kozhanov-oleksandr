@@ -99,6 +99,7 @@
 }
 
 .form-template .form .form-group input,
+.form-template .form .form-group select,
 .form-template .form button {
   width: stretch;
   outline: none;
@@ -109,10 +110,41 @@
   background: #D9D9D9;
   font-size: 1.2rem;
   color: #333;
+  box-sizing: border-box;
+}
+
+.form-template .form .form-group select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background: #D9D9D9 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='6' viewBox='0 0 12 6'><path d='M0 0h12L6 6z' fill='%23333'/></svg>") no-repeat right 1rem center;
+  background-size: 12px;
+  padding-right: 2.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.form-template .form .form-group select:focus {
+  background-color: #C9C9C9;
+  outline: 2px solid rgb(92, 148, 254);
+  outline-offset: -2px;
+}
+
+.form-template .form .form-group select option {
+  background: #fff;
+  color: #333;
+  font-size: 1.2rem;
+  padding: 0.5rem;
+}
+
+.form-template .form .form-group select option[value=""] {
+  color: #888; /* Сірий колір для плейсхолдера "Виберіть власника" */
 }
 
 .form-template .form .form-group label {
   margin-left: 1rem;
+  color: #333;
+  font-size: 1.2rem;
 }
 
 .form-template .form .form-group input::placeholder {
@@ -175,9 +207,23 @@
   }
 
   .form-template .form .form-group input,
+  .form-template .form .form-group select,
   .form-template .form button {
     font-size: 1rem;
     padding: 0.4rem 0.8rem;
+  }
+
+  .form-template .form .form-group select {
+    background-size: 10px;
+    padding-right: 2rem;
+  }
+
+  .form-template .form .form-group select option {
+    font-size: 1rem;
+  }
+
+  .form-template .form .form-group label {
+    font-size: 1rem;
   }
 
   .form-template .header .title .icon {

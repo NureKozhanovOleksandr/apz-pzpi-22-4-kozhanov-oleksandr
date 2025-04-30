@@ -85,9 +85,9 @@
     "breed": "Порода",
     "age": "Вік",
     "weight": "Вага",
-    "ownerId": "ID власника",
+    "owner": "Власник",
     "lastVisit": "Останній візит",
-    "deleteAnimal": "Видалити тварину",
+    "deleteAnimal": "Видалити",
     "animalDeleted": "Тварину успішно видалено",
     "deleteAnimalConfirmation": "Ви впевнені, що хочете видалити цю тварину?",
     "confirm": "Підтвердити",
@@ -95,7 +95,8 @@
     "noBreed": "Без породи",
     "unknownAge": "Невідомий вік",
     "unknownWeight": "Невідома вага",
-    "noVisit": "Відсутні візити"
+    "noVisit": "Відсутні візити",
+    "edit": "Редагувати"
   },
   "appointments": {
     "animalId": "ID тварини",
@@ -166,6 +167,26 @@
     "confirm": "Підтвердити",
     "cancel": "Скасувати",
     "noTemperature": "Без температури"
+  },
+  "animalForm": {
+    "addNewAnimal": "Додати нову тварину",
+    "editAnimal": "Редагувати тварину",
+    "addAnimal": "Додати тварину",
+    "saveChanges": "Зберегти зміни",
+    "name": "Ім'я",
+    "species": "Вид",
+    "breed": "Порода",
+    "age": "Вік",
+    "weight": "Вага",
+    "owner": "Власник",
+    "lastVisit": "Останній візит",
+    "nameRequired": "Ім'я обов'язкове",
+    "speciesRequired": "Вид обов'язковий",
+    "ownerRequired": "Ім'я власника обов'язкове",
+    "weightPattern": "Вага має бути числом з максимум двома знаками після коми",
+    "animalAddedSuccessfully": "Тварину успішно додано",
+    "animalUpdatedSuccessfully": "Тварину успішно оновлено",
+    "failedToSaveAnimal": "Не вдалося зберегти тварину"
   },
   "notification": {
     "failedToDeleteUser": "Не вдалося видалити користувача",

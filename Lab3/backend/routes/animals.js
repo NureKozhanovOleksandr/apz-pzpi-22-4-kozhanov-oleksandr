@@ -7,13 +7,17 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 
 /**
  * @route GET /api/animals/all
- * @desc Get all animals
- * @access Private (owner, admin)
+ * @desc Get all animals with owner username
+ * @access Private (admin)
  */
 router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const animals = await Animal.find();
-    res.json(animals);
+    const animals = await Animal.find().populate('ownerId', 'username');
+    const transformedAnimals = animals.map((animal) => ({
+      ...animal.toObject(),
+      ownerUsername: animal.ownerId?.username || null,
+    }));
+    res.json(transformedAnimals);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -21,14 +25,20 @@ router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) =
 
 /**
  * @route GET /api/animals/:id
- * @desc Get animal by ID
+ * @desc Get animal by ID with owner username
  * @access Private (owner, admin)
  */
 router.get('/:id', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
   try {
-    const animal = await Animal.findById(req.params.id);
+    const animal = await Animal.findById(req.params.id).populate('ownerId', 'username');
     if (!animal) return res.status(404).json({ message: 'Animal not found' });
-    res.json(animal);
+
+    const transformedAnimal = {
+      ...animal.toObject(),
+      ownerUsername: animal.ownerId?.username || null,
+    };
+
+    res.json(transformedAnimal);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -40,25 +50,25 @@ router.get('/:id', authMiddleware, roleMiddleware(['owner', 'admin']), async (re
  * @access Private (admin)
  */
 router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
-  const animal = new Animal({
-    name: req.body.name,
-    species: req.body.species,
-    breed: req.body.breed,
-    age: req.body.age,
-    weight: req.body.weight,
-    ownerId: req.body.ownerId,
-    healthRecordsIds: req.body.healthRecordsIds,
-    lastVisit: req.body.lastVisit
-  });
-
   try {
+    const owner = await User.findOne({ username: req.body.ownerUsername, role: 'owner' });
+    if (!owner) return res.status(404).json({ message: 'Owner not found' });
+
+    const animal = new Animal({
+      name: req.body.name,
+      species: req.body.species,
+      breed: req.body.breed,
+      age: req.body.age,
+      weight: req.body.weight,
+      ownerId: owner._id,
+      healthRecordsIds: req.body.healthRecordsIds,
+      lastVisit: req.body.lastVisit,
+    });
+
     const newAnimal = await animal.save();
 
-    const owner = await User.findOne({ _id: req.body.ownerId, role: 'admin' });
-    if (owner) {
-      owner.ownerData.animals.push(newAnimal._id);
-      await owner.save();
-    }
+    owner.ownerData.animals.push(newAnimal._id);
+    await owner.save();
 
     res.status(201).json({ message: 'Animal added successfully' });
   } catch (err) {

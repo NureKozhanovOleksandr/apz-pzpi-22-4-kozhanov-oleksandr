@@ -3,12 +3,16 @@ import TablePage from "./tablePage";
 import api from "../configs/api";
 import Modal from "../components/modal";
 import { useTranslation } from "react-i18next";
+import AnimalForm from "../components/forms/animal";
 
 const Animals = () => {
   const { t } = useTranslation();
   const [refreshKey, setRefreshKey] = useState(0);
   const [notification, setNotification] = useState({ isOpen: false, message: "" });
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, animalId: null });
+  const [addAnimalModal, setAddAnimalModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [editData, setEditData] = useState(null);
 
   const columnDefs = [
     { field: "name", headerName: t("animals.name") },
@@ -16,8 +20,26 @@ const Animals = () => {
     { field: "breed", headerName: t("animals.breed") },
     { field: "age", headerName: t("animals.age") },
     { field: "weight", headerName: t("animals.weight") },
-    { field: "ownerId", headerName: t("animals.ownerId") },
+    { field: "owner", headerName: t("animals.owner") },
     { field: "lastVisit", headerName: t("animals.lastVisit") },
+    {
+      field: "edit",
+      headerName: "",
+      cellRenderer: (params) => (
+        <button
+          className="row-btn edit"
+          onClick={() => {
+            setEditData(params.data);
+            setEditModal(true);
+          }}
+        >
+          {t("animals.edit")}
+        </button>
+      ),
+      width: 100,
+      filter: false,
+      cellStyle: { textAlign: "center" },
+    },
     {
       field: "delete",
       headerName: "",
@@ -50,6 +72,14 @@ const Animals = () => {
     }
   };
 
+  const handleEditClose = (shouldRefresh = false) => {
+    setEditModal(false);
+    setEditData(null);
+    if (shouldRefresh) {
+      setRefreshKey((prev) => prev + 1);
+    }
+  };
+
   return (
     <>
       <TablePage
@@ -63,14 +93,17 @@ const Animals = () => {
             breed: animal.breed || t("animals.noBreed"),
             age: animal.age || t("animals.unknownAge"),
             weight: animal.weight || t("animals.unknownWeight"),
-            ownerId: animal.ownerId,
+            owner: animal.ownerId.username,
             lastVisit: animal.lastVisit
               ? new Date(animal.lastVisit).toLocaleDateString()
               : t("animals.noVisit"),
           }))
         }
         refreshKey={refreshKey}
+        showActions={true}
+        onAddClick={() => setAddAnimalModal(true)}
       />
+
       <Modal
         isOpen={confirmModal.isOpen}
         onClose={() => setConfirmModal({ isOpen: false, animalId: null })}
@@ -81,6 +114,30 @@ const Animals = () => {
       >
         <p>{t("animals.deleteAnimalConfirmation")}</p>
       </Modal>
+
+      <Modal
+        isOpen={addAnimalModal}
+        onClose={() => setAddAnimalModal(false)}
+        isDialog={false}
+      >
+        <AnimalForm
+          onBack={() => setAddAnimalModal(false)}
+          onSuccess={() => setRefreshKey((prev) => prev + 1)}
+        />
+      </Modal>
+
+      <Modal
+        isOpen={editModal}
+        onClose={() => handleEditClose(false)}
+        isDialog={false}
+      >
+        <AnimalForm
+          initialData={editData}
+          onBack={() => handleEditClose(false)}
+          onSuccess={() => handleEditClose(true)}
+        />
+      </Modal>
+
       <Modal
         isOpen={notification.isOpen}
         onClose={() => setNotification({ isOpen: false, message: "" })}

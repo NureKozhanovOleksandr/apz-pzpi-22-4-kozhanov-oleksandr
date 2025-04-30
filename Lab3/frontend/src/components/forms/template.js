@@ -54,16 +54,30 @@ const FormTemplate = ({
       </div>
       {status.message && <div className={`status ${status.type}`}>{status.message}</div>}
       <form className='form' onSubmit={handleSubmit(handleFormSubmit)}>
-        {fields.map(({ name, type, label, validation, showLabel = false, placeholder }) => (
+        {fields.map(({ name, type, label, validation, showLabel = false, placeholder, options }) => (
           <div className="form-group" key={name}>
             {showLabel && <label htmlFor={name}>{label}</label>}
-            <input
-              id={name}
-              type={name === "password" && showPassword ? "text" : type}
-              {...register(name, validation)}
-              autoComplete={name === "password" ? "new-password" : "off"}
-              placeholder={!showLabel ? placeholder : undefined}
-            />
+            {type === "select" ? (
+              <select
+                id={name}
+                {...register(name, validation)}
+                defaultValue=""
+              >
+                {options.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            ) : (
+              <input
+                id={name}
+                type={name === "password" && showPassword ? "text" : type}
+                {...register(name, validation)}
+                autoComplete={name === "password" ? "new-password" : "off"}
+                placeholder={!showLabel ? placeholder : undefined}
+              />
+            )}
             {errors[name] && <p className="error">{errors[name].message}</p>}
             {name === "password" && (
               showPassword ? (
