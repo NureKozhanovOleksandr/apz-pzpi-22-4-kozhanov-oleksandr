@@ -131,15 +131,6 @@ const AnimalForm = ({ initialData = null, onBack, onSuccess }) => {
             })),
           ],
         },
-        {
-          name: "lastVisit",
-          type: "date",
-          label: t("animalForm.lastVisit"),
-          defaultValue: initialData?.lastVisit && isValidDate(initialData.lastVisit)
-            ? new Date(initialData.lastVisit).toISOString().split("T")[0]
-            : "",
-          showLabel: true,
-        },
       ]}
     />
   );

@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Appointment = require('../Models/Appointment');
+const Animal = require('../Models/Animal');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
@@ -64,6 +65,16 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) 
 
   try {
     await appointment.save();
+
+    console.log("date: ", req.body.date);
+    console.log("animailId: ", req.body.animalId);
+
+    await Animal.findByIdAndUpdate(
+      req.body.animalId,
+      { lastVisit: req.body.date },
+      { new: true }
+    );
+
     res.status(201).json({ message: 'Appointment added successfully' });
   } catch (err) {
     res.status(400).json({ message: err.message });

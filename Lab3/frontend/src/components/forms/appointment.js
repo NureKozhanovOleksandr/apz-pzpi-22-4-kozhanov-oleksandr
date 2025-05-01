@@ -40,6 +40,8 @@ const AppointmentForm = ({ initialData = null, onBack, onSuccess }) => {
         status: data.status,
       };
 
+      console.log("Formatted Data:", formattedData);
+
       if (initialData) {
         await api.put(`/appointments/${initialData._id}`, formattedData);
         setStatus({ message: t("appointmentForm.updatedSuccessfully"), type: "success" });
