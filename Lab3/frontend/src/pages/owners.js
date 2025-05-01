@@ -90,7 +90,7 @@ const Owners = () => {
             username: owner.username,
             email: owner.email || t("owners.noEmail"),
             address: owner.ownerData?.address || t("owners.noAddress"),
-            animals: owner.ownerData?.animals?.length || t("owners.noAnimals"),
+            animals: owner.ownerData?.animals?.length || 0,
           }))
         }
         refreshKey={refreshKey}

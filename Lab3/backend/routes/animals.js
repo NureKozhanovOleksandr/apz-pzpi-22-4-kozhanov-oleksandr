@@ -83,9 +83,35 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) 
  */
 router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const animal = await Animal.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { ownerId, ...updateData } = req.body;
+
+    const animal = await Animal.findById(req.params.id);
     if (!animal) return res.status(404).json({ message: 'Animal not found' });
-    res.json({ message: 'Animal updated successfully' });
+
+    if (ownerId && ownerId !== String(animal.ownerId)) {
+      const oldOwner = await User.findById(animal.ownerId);
+      if (oldOwner && oldOwner.ownerData && Array.isArray(oldOwner.ownerData.animals)) {
+        oldOwner.ownerData.animals.pull(animal._id);
+        await oldOwner.save();
+      }
+
+      const newOwner = await User.findById(ownerId);
+      if (!newOwner || newOwner.role !== 'owner') {
+        return res.status(404).json({ message: 'New owner not found or invalid role' });
+      }
+
+      if (newOwner.ownerData && Array.isArray(newOwner.ownerData.animals)) {
+        newOwner.ownerData.animals.push(animal._id);
+        await newOwner.save();
+      }
+
+      updateData.ownerId = ownerId;
+    }
+
+    const updatedAnimal = await Animal.findByIdAndUpdate(req.params.id, updateData, { new: true });
+    if (!updatedAnimal) return res.status(404).json({ message: 'Animal not found after update' });
+
+    res.json({ message: 'Animal updated successfully', animal: updatedAnimal });
   } catch (err) {
     res.status(400).json({ message: err.message });
   }

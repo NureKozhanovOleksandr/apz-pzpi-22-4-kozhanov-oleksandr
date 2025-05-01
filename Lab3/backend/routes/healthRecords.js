@@ -11,8 +11,16 @@ const roleMiddleware = require('../middleware/roleMiddleware');
  */
 router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const healthRecords = await HealthRecord.find();
-    res.json(healthRecords);
+    const healthRecords = await HealthRecord.find().populate('animalId', 'name');
+
+    const transformedRecords = healthRecords.map((record) => ({
+      _id: record._id,
+      animalName: record.animalId?.name || 'Unknown Animal',
+      date: record.date,
+      temperature: record.temperature,
+    }));
+
+    res.json(transformedRecords);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

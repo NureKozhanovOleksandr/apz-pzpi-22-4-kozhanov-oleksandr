@@ -28,13 +28,16 @@ const AnimalForm = ({ initialData = null, onBack, onSuccess }) => {
 
   const handleSubmit = async (data, setStatus) => {
     try {
+      const selectedOwner = owners.find((owner) => owner.username === data.ownerId);
+      const ownerId = selectedOwner?._id;
+
       const formattedData = {
         name: data.name,
         species: data.species,
         breed: data.breed,
         age: parseInt(data.age, 10) || null,
         weight: parseFloat(data.weight) || null,
-        ownerId: data.ownerId,
+        ownerId,
         lastVisit: data.lastVisit && isValidDate(data.lastVisit) ? new Date(data.lastVisit).toISOString() : null,
       };
 
@@ -47,16 +50,8 @@ const AnimalForm = ({ initialData = null, onBack, onSuccess }) => {
       }
 
       setTimeout(() => {
-        console.log('onBack:', onBack);
-        console.log('onSuccess:', onSuccess);
-        if (typeof onSuccess === 'function') {
-          onSuccess();
-        }
-        if (typeof onBack === 'function') {
-          onBack();
-        } else {
-          console.warn('onBack is not a function');
-        }
+        onSuccess();
+        onBack();
       }, 1000);
     } catch (error) {
       setStatus({
@@ -69,6 +64,8 @@ const AnimalForm = ({ initialData = null, onBack, onSuccess }) => {
   if (isLoadingOwners) {
     return <div>{t("animalForm.loadingOwners")}</div>;
   }
+
+  const defaultOwnerUsername = initialData?.owner || "";
 
   return (
     <FormTemplate
@@ -124,13 +121,12 @@ const AnimalForm = ({ initialData = null, onBack, onSuccess }) => {
           name: "ownerId",
           type: "select",
           label: t("animalForm.owner"),
-          defaultValue: initialData?.ownerId || "",
+          defaultValue: defaultOwnerUsername,
           validation: { required: t("animalForm.ownerRequired") },
           showLabel: true,
           options: [
-            { value: "",  },
             ...owners.map((owner) => ({
-              value: owner._id,
+              value: owner.username,
               label: owner.username,
             })),
           ],
@@ -149,4 +145,4 @@ const AnimalForm = ({ initialData = null, onBack, onSuccess }) => {
   );
 };
 
-export default AnimalForm; 
+export default AnimalForm;
