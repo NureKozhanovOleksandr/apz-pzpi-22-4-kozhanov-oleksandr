@@ -11,8 +11,23 @@ const roleMiddleware = require('../middleware/roleMiddleware');
  */
 router.get('/all', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
   try {
-    const appointments = await Appointment.find();
-    res.json(appointments);
+    const appointments = await Appointment.find()
+      .populate('animalId', 'name')
+      .populate('vetId', 'username');
+
+    const transformedAppointments = appointments.map((appointment) => ({
+      _id: appointment._id,
+      animalName: appointment.animalId?.name || 'Unknown Animal',
+      vetName: appointment.vetId?.username || 'Unknown Vet',
+      date: appointment.date,
+      reason: appointment.reason,
+      diagnosis: appointment.diagnosis || '',
+      treatment: appointment.treatment || '',
+      notes: appointment.notes || '',
+      status: appointment.status,
+    }));
+
+    res.json(transformedAppointments);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -36,7 +51,7 @@ router.get('/:id', authMiddleware, roleMiddleware(['owner', 'admin']), async (re
 /**
  * @route POST /api/appointments/add
  * @desc Create a new appointment
- * @access Private (vet)
+ * @access Private (admin)
  */
 router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   const appointment = new Appointment({
@@ -58,7 +73,7 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) 
 /**
  * @route DELETE /api/appointments/:id
  * @desc Delete an appointment
- * @access Private (vet)
+ * @access Private (admin)
  */
 router.delete('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
@@ -67,6 +82,30 @@ router.delete('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res
     res.json({ message: 'Appointment deleted successfully' });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+/**
+ * @route PUT /api/appointments/:id
+ * @desc Edit an appointment
+ * @access Private (admin)
+ */
+router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+  try {
+    const { vetId, animalId, date, ...updateData } = req.body;
+
+    const appointment = await Appointment.findById(req.params.id);
+    if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
+
+    const updatedAppointment = await Appointment.findByIdAndUpdate(
+      req.params.id,
+      updateData,
+      { new: true }
+    );
+
+    res.json({ message: 'Appointment updated successfully', appointment: updatedAppointment });
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 });
 

@@ -78,7 +78,7 @@
     "deleteVetConfirmation": "Ви впевнені, що хочете видалити цього ветеринара?",
     "confirm": "Підтвердити",
     "cancel": "Скасувати",
-    "edit":"Редагувати"
+    "edit": "Редагувати"
   },
   "animals": {
     "name": "Ім'я",
@@ -100,19 +100,20 @@
     "edit": "Редагувати"
   },
   "appointments": {
-    "animalId": "ID тварини",
-    "vetId": "ID ветеринара",
+    "animal": "Тварина",
+    "vet": "Лікар",
     "date": "Дата",
     "reason": "Причина",
     "diagnosis": "Діагноз",
     "treatment": "Лікування",
     "notes": "Нотатки",
     "status": "Статус",
-    "deleteAppointment": "Видалити запис",
+    "deleteAppointment": "Видалити",
     "appointmentDeleted": "Запис успішно видалено",
     "deleteAppointmentConfirmation": "Ви впевнені, що хочете видалити цей запис?",
     "confirm": "Підтвердити",
     "cancel": "Скасувати",
+    "edit": "Редагувати",
     "noDiagnosis": "Без діагнозу",
     "noTreatment": "Без лікування",
     "noNotes": "Без нотаток"
@@ -159,7 +160,7 @@
     "ownerUpdatedSuccessfully": "Власника успішно оновлено!"
   },
   "healthRecords": {
-    "animalId": "ID тварини",
+    "animal": "Тварина",
     "date": "Дата",
     "temperature": "Температура",
     "deleteRecord": "Видалити запис",
@@ -190,7 +191,7 @@
     "failedToSaveAnimal": "Не вдалося зберегти тварину"
   },
   "vetForm": {
-    "addNewVet": "Додати нового ветеринара",
+    "addNewVet": "Додати ветеринара",
     "editVet": "Редагувати ветеринара",
     "saveChanges": "Зберегти зміни",
     "addVet": "Додати ветеринара",
@@ -223,6 +224,29 @@
   "tablePage": {
     "loading": "Завантаження...",
     "error": "Не вдалося завантажити дані.",
-    "addNew": "додати нове"
+    "addNew": "додати новий запис"
+  },
+  "appointmentForm": {
+    "addNewAppointment": "Додати новий прийом",
+    "editAppointment": "Редагувати прийом",
+    "saveChanges": "Зберегти зміни",
+    "addAppointment": "Додати прийом",
+    "animal": "Тварина",
+    "vet": "Ветеринар",
+    "date": "Дата",
+    "reason": "Причина",
+    "diagnosis": "Діагноз",
+    "treatment": "Лікування",
+    "notes": "Примітки",
+    "status": "Статус",
+    "animalRequired": "Тварина є обов'язковою",
+    "vetRequired": "Ветеринар є обов'язковим",
+    "dateRequired": "Дата є обов'язковою",
+    "reasonRequired": "Причина є обов'язковою",
+    "statusRequired": "Статус є обов'язковим",
+    "addedSuccessfully": "Прийом успішно додано",
+    "updatedSuccessfully": "Прийом успішно оновлено",
+    "failedToSave": "Не вдалося зберегти прийом",
+    "loadingData": "Завантаження даних..."
   }
 }

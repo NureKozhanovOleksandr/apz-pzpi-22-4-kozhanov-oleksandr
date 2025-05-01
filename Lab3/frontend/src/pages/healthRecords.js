@@ -11,7 +11,7 @@ const HealthRecords = () => {
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, recordId: null });
 
   const columnDefs = [
-    { field: "animalId", headerName: t("healthRecords.animalId") },
+    { field: "animal", headerName: t("healthRecords.animal") },
     { field: "date", headerName: t("healthRecords.date") },
     { field: "temperature", headerName: t("healthRecords.temperature") },
     {
@@ -54,7 +54,7 @@ const HealthRecords = () => {
         transformData={(data) =>
           data.map((record) => ({
             _id: record._id,
-            animalId: record.animalId,
+            animal: record.animalName,
             date: new Date(record.date).toLocaleDateString(),
             temperature: record.temperature || t("healthRecords.noTemperature"),
           }))

@@ -3,22 +3,44 @@ import TablePage from "./tablePage";
 import api from "../configs/api";
 import Modal from "../components/modal";
 import { useTranslation } from "react-i18next";
+import AppointmentForm from "../components/forms/appointment";
 
 const Appointments = () => {
   const { t } = useTranslation();
   const [refreshKey, setRefreshKey] = useState(0);
   const [notification, setNotification] = useState({ isOpen: false, message: "" });
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, appointmentId: null });
+  const [addAppointmentModal, setAddAppointmentModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [editData, setEditData] = useState(null);
 
   const columnDefs = [
-    { field: "animalId", headerName: t("appointments.animalId") },
-    { field: "vetId", headerName: t("appointments.vetId") },
+    { field: "animal", headerName: t("appointments.animal") },
+    { field: "vet", headerName: t("appointments.vet") },
     { field: "date", headerName: t("appointments.date") },
     { field: "reason", headerName: t("appointments.reason") },
     { field: "diagnosis", headerName: t("appointments.diagnosis") },
     { field: "treatment", headerName: t("appointments.treatment") },
     { field: "notes", headerName: t("appointments.notes") },
     { field: "status", headerName: t("appointments.status") },
+    {
+      field: "edit",
+      headerName: "",
+      cellRenderer: (params) => (
+        <button
+          className="row-btn edit"
+          onClick={() => {
+            setEditData(params.data);
+            setEditModal(true);
+          }}
+        >
+          {t("appointments.edit")}
+        </button>
+      ),
+      width: 100,
+      filter: false,
+      cellStyle: { textAlign: "center" },
+    },
     {
       field: "delete",
       headerName: "",
@@ -51,6 +73,14 @@ const Appointments = () => {
     }
   };
 
+  const handleEditClose = (shouldRefresh = false) => {
+    setEditModal(false);
+    setEditData(null);
+    if (shouldRefresh) {
+      setRefreshKey((prev) => prev + 1);
+    }
+  };
+
   return (
     <>
       <TablePage
@@ -59,8 +89,8 @@ const Appointments = () => {
         transformData={(data) =>
           data.map((appointment) => ({
             _id: appointment._id,
-            animalId: appointment.animalId,
-            vetId: appointment.vetId,
+            animal: appointment.animalName,
+            vet: appointment.vetName,
             date: new Date(appointment.date).toLocaleDateString(),
             reason: appointment.reason,
             diagnosis: appointment.diagnosis || t("appointments.noDiagnosis"),
@@ -70,6 +100,8 @@ const Appointments = () => {
           }))
         }
         refreshKey={refreshKey}
+        showActions={true}
+        onAddClick={() => setAddAppointmentModal(true)}
       />
       <Modal
         isOpen={confirmModal.isOpen}
@@ -80,6 +112,27 @@ const Appointments = () => {
         cancelText={t("appointments.cancel")}
       >
         <p>{t("appointments.deleteAppointmentConfirmation")}</p>
+      </Modal>
+      <Modal
+        isOpen={addAppointmentModal}
+        onClose={() => setAddAppointmentModal(false)}
+        isDialog={false}
+      >
+        <AppointmentForm
+          onBack={() => setAddAppointmentModal(false)}
+          onSuccess={() => setRefreshKey((prev) => prev + 1)}
+        />
+      </Modal>
+      <Modal
+        isOpen={editModal}
+        onClose={() => handleEditClose(false)}
+        isDialog={false}
+      >
+        <AppointmentForm
+          initialData={editData}
+          onBack={() => handleEditClose(false)}
+          onSuccess={() => handleEditClose(true)}
+        />
       </Modal>
       <Modal
         isOpen={notification.isOpen}

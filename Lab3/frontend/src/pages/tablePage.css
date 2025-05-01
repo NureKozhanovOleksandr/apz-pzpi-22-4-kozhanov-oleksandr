@@ -90,6 +90,7 @@
     border-radius: 1rem;
     display: flex;
     justify-content: center;
+    flex-grow: unset;
   }
 
   .page .actions button {
