@@ -73,13 +73,13 @@
   background: #C3FFD2;
 }
 
-.form-template .form .form-group {
+.form-template .form .form-group .input-group {
   position: relative;
 }
 
 .form-template .form .form-group .icon {
   position: absolute;
-  top: 50%;
+  top: 1.7rem;
   transform: translateY(-50%);
   right: 1rem;
   z-index: 1001;
@@ -138,7 +138,7 @@
 }
 
 .form-template .form .form-group select option[value=""] {
-  color: #888; /* Сірий колір для плейсхолдера "Виберіть власника" */
+  color: #888;
 }
 
 .form-template .form .form-group label {
@@ -234,5 +234,11 @@
   .form-template .status {
     font-size: 0.9rem;
     padding: 0.8rem 0;
+  }
+
+  .form-template .form .form-group .icon {
+    top: 1.5rem;
+    font-size: 1.2rem;
+    right: 0.7rem;
   }
 }

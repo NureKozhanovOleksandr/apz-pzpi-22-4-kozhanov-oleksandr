@@ -72,10 +72,12 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) 
  * @access Private (admin)
  */
 router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+  const { email, specialization, contactInfo } = req.body;
+
   try {
     const updatedVet = await User.findOneAndUpdate(
-      { _id: req.params.id, role: 'vet' },
-      { ...req.body },
+      { _id: req.params.id, role: 'admin' },
+      { email, vetData: { specialization, contactInfo } },
       { new: true }
     );
     if (!updatedVet) return res.status(404).json({ message: 'Vet not found' });

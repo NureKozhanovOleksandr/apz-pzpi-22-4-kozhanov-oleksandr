@@ -70,22 +70,24 @@ const FormTemplate = ({
                 ))}
               </select>
             ) : (
-              <input
-                id={name}
-                type={name === "password" && showPassword ? "text" : type}
-                {...register(name, validation)}
-                autoComplete={name === "password" ? "new-password" : "off"}
-                placeholder={!showLabel ? placeholder : undefined}
-              />
+              <div className='input-group'>
+                <input
+                  id={name}
+                  type={name === "password" && showPassword ? "text" : type}
+                  {...register(name, validation)}
+                  autoComplete={name === "password" ? "new-password" : "off"}
+                  placeholder={!showLabel ? placeholder : undefined}
+                />
+                {name === "password" && (
+                  showPassword ? (
+                    <FiEyeOff className="icon" onClick={() => setShowPassword(false)} />
+                  ) : (
+                    <FiEye className="icon" onClick={() => setShowPassword(true)} />
+                  )
+                )}
+              </div>
             )}
             {errors[name] && <p className="error">{errors[name].message}</p>}
-            {name === "password" && (
-              showPassword ? (
-                <FiEyeOff className="icon" onClick={() => setShowPassword(false)} />
-              ) : (
-                <FiEye className="icon" onClick={() => setShowPassword(true)} />
-              )
-            )}
           </div>
         ))}
         {isLogin && (

@@ -77,7 +77,8 @@
     "vetDeleted": "Ветеринара успішно видалено",
     "deleteVetConfirmation": "Ви впевнені, що хочете видалити цього ветеринара?",
     "confirm": "Підтвердити",
-    "cancel": "Скасувати"
+    "cancel": "Скасувати",
+    "edit":"Редагувати"
   },
   "animals": {
     "name": "Ім'я",
@@ -188,6 +189,27 @@
     "animalUpdatedSuccessfully": "Тварину успішно оновлено",
     "failedToSaveAnimal": "Не вдалося зберегти тварину"
   },
+  "vetForm": {
+    "addNewVet": "Додати нового ветеринара",
+    "editVet": "Редагувати ветеринара",
+    "saveChanges": "Зберегти зміни",
+    "addVet": "Додати ветеринара",
+    "username": "Ім'я користувача",
+    "usernameRequired": "Ім'я користувача є обов'язковим",
+    "email": "Електронна пошта",
+    "invalidEmail": "Невірний формат електронної пошти",
+    "password": "Пароль",
+    "passwordPlaceholder": "Введіть пароль",
+    "passwordRequired": "Пароль є обов'язковим",
+    "passwordMinLength": "Пароль має містити щонайменше 8 символів",
+    "specialization": "Спеціалізація",
+    "specializationRequired": "Спеціалізація є обов'язковою",
+    "contactInfo": "Контактна інформація",
+    "contactInfoRequired": "Контактна інформація є обов'язковою",
+    "vetAddedSuccessfully": "Ветеринара успішно додано",
+    "vetUpdatedSuccessfully": "Ветеринара успішно оновлено",
+    "failedToSaveVet": "Не вдалося зберегти ветеринара"
+  },
   "notification": {
     "failedToDeleteUser": "Не вдалося видалити користувача",
     "passwordUpdated": "Пароль успішно оновлено",
@@ -195,7 +217,8 @@
     "failedToDeleteAnimal": "Не вдалося видалити тварину",
     "failedToDeleteAppointment": "Не вдалося видалити запис",
     "failedToDeleteOwner": "Не вдалося видалити власника",
-    "failedToDeleteRecord": "Не вдалося видалити медичний запис"
+    "failedToDeleteRecord": "Не вдалося видалити медичний запис",
+    "failedToDeleteVet": "Не вдалося видалити ветеринара"
   },
   "tablePage": {
     "loading": "Завантаження...",
