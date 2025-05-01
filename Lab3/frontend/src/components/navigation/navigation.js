@@ -1,10 +1,7 @@
 import './navigation.css';
 import logo from './logo.png';
-import { MdLogout, MdPayment } from "react-icons/md";
-import { FiUsers } from "react-icons/fi";
-import { GrUserAdmin } from "react-icons/gr";
-import { IoArrowBackOutline } from "react-icons/io5";
-import { FaRegUser } from "react-icons/fa";
+import { MdLogout } from "react-icons/md";
+import { FaUserDoctor } from "react-icons/fa6";
 import { IoIosArrowDown } from "react-icons/io";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { useState, useEffect } from 'react';
@@ -12,6 +9,10 @@ import { Link, useLocation } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/authContext';
 import LanguageSwitcher from '../languageSwitcher';
+import { IoIosPerson } from "react-icons/io";
+import { RiHealthBookLine } from "react-icons/ri";
+import { FaDog } from "react-icons/fa6";
+import { MdOutlineAssignment } from "react-icons/md";
 import Modal from '../modal';
 import api from '../../configs/api';
 import { useForm } from "react-hook-form";
@@ -130,41 +131,31 @@ const Navigation = ({ changeLanguage }) => {
         <div className='links'>
           <div className={`link-container ${getActiveLink('/vets')}`}>
             <Link to="/vets" className="link" onClick={handleLinkClick}>
-              {!userEmail ? (
-                <FiUsers className='icon' />
-              ) : (
-                <IoArrowBackOutline className='icon arrow' />
-              )}
+              <FaUserDoctor className='icon' />
               {t('navigation.vets')}
             </Link>
-            {userEmail && (
-              <div className="user-email">
-                <FaRegUser className='icon' />
-                {userEmail}
-              </div>
-            )}
           </div>
           <div className={`link-container ${getActiveLink('/animals')}`}>
             <Link to="/animals" className="link" onClick={handleLinkClick}>
-              <GrUserAdmin className='icon' />
+              <FaDog className='icon' />
               {t('navigation.animals')}
             </Link>
           </div>
           <div className={`link-container ${getActiveLink('/appointments')}`}>
             <Link to="/appointments" className="link" onClick={handleLinkClick}>
-              <MdPayment className='icon' />
+              <MdOutlineAssignment className='icon' />
               {t('navigation.appointments')}
             </Link>
           </div>
           <div className={`link-container ${getActiveLink('/owners')}`}>
             <Link to="/owners" className="link" onClick={handleLinkClick}>
-              <MdPayment className='icon' />
+              <IoIosPerson className='icon' />
               {t('navigation.owners')}
             </Link>
           </div>
           <div className={`link-container ${getActiveLink('/health-records')}`}>
             <Link to="/health-records" className="link" onClick={handleLinkClick}>
-              <MdPayment className='icon' />
+              <RiHealthBookLine className='icon' />
               {t('navigation.healthRecords')}
             </Link>
           </div>
