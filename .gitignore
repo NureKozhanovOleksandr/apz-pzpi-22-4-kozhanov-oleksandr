@@ -51,4 +51,8 @@ ehthumbs.db
 # VSCode
 .vscode/
 
+# Postman
 postman
+
+# Idea
+.idea/
