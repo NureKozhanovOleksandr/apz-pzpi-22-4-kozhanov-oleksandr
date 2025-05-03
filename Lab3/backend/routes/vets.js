@@ -10,7 +10,7 @@ const roleMiddleware = require('../middleware/roleMiddleware');
  * @desc Get all vets
  * @access Private (admin)
  */
-router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+router.get('/all', authMiddleware, roleMiddleware(['admin', 'owner']), async (req, res) => {
   try {
     const vets = await User.find({ role: 'admin' });
     const updatedVets = vets.filter(vet => vet.username !== 'admin');
@@ -30,7 +30,7 @@ router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) =
  * @desc Get vet by ID
  * @access Private (admin)
  */
-router.get('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+router.get('/:id', authMiddleware, roleMiddleware(['admin', 'owner']), async (req, res) => {
   try {
     const vet = await User.findOne({ _id: req.params.id, role: 'admin' });
     if (!vet) return res.status(404).json({ message: 'Vet not found' });

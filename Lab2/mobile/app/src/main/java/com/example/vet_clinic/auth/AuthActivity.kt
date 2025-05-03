@@ -40,6 +40,15 @@ class AuthActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        val token = sharedPreferences.getString(TOKEN_KEY, null)
+        if (token != null) {
+            Log.d(TAG, "Token found, navigating to MainActivity")
+            startActivity(Intent(this, com.example.vet_clinic.MainActivity::class.java))
+            finish()
+            return
+        }
+
         setContent {
             var username by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }

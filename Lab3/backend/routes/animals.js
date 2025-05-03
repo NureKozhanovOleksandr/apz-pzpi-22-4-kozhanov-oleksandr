@@ -10,7 +10,7 @@ const roleMiddleware = require('../middleware/roleMiddleware');
  * @desc Get all animals with owner username
  * @access Private (admin)
  */
-router.get('/all', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+router.get('/all', authMiddleware, roleMiddleware(['admin', 'owner']), async (req, res) => {
   try {
     const animals = await Animal.find().populate('ownerId', 'username');
     const transformedAnimals = animals.map((animal) => ({

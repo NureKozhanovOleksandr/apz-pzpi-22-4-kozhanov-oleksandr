@@ -14,23 +14,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.vet_clinic.auth.AuthActivity
 import com.example.vet_clinic.ui.theme.NavBar
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.*
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.IOException
 import kotlin.coroutines.resume
 
 @OptIn(ExperimentalMaterial3Api::class)
-class MainActivity : ComponentActivity() {
+class VetsActivity : ComponentActivity() {
     private val client = OkHttpClient()
     private val backendUrl = "http://10.0.2.2:5000/api"
 
     companion object {
-        private const val TAG = "MainActivity"
+        private const val TAG = "VetsActivity"
         private const val PREFS_NAME = "AppPrefs"
         private const val TOKEN_KEY = "auth_token"
     }
@@ -38,14 +35,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var animals by remember { mutableStateOf<List<Animal>>(emptyList()) }
+            var vets by remember { mutableStateOf<List<Vet>>(emptyList()) }
             val scope = rememberCoroutineScope()
 
-            // Загрузка животных при старте
+            // Загрузка врачей при старте
             LaunchedEffect(Unit) {
                 val token = getToken()
                 if (token != null) {
-                    animals = fetchAnimals(token)
+                    vets = fetchVets(token)
                 }
             }
 
@@ -58,33 +55,27 @@ class MainActivity : ComponentActivity() {
                         .padding(padding),
                     contentPadding = PaddingValues(16.dp)
                 ) {
-                    items(animals) { animal ->
+                    items(vets) { vet ->
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 8.dp)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Text("Name", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(animal.name, fontSize = 18.sp)
+                                Text("Username", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(vet.username, fontSize = 18.sp, fontWeight = FontWeight.Bold)
                                 Spacer(modifier = Modifier.height(12.dp))
-                                Text("Species", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(animal.species, fontSize = 18.sp)
+                                Text("Email", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(vet.email, fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
-                                Text("Breed", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(animal.breed, fontSize = 18.sp)
+                                Text("Role", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(vet.role, fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
-                                Text("Age", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(animal.age.toString(), fontSize = 18.sp)
+                                Text("Specialization", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(vet.specialization, fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
-                                Text("Weight", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(animal.weight.toString(), fontSize = 18.sp)
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text("Owner", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(animal.ownerUsername, fontSize = 18.sp)
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text("Last Visit", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(animal.lastVisit ?: "No visits", fontSize = 18.sp)
+                                Text("Contact Info", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(vet.contactInfo, fontSize = 18.sp)
                             }
                         }
                     }
@@ -98,9 +89,9 @@ class MainActivity : ComponentActivity() {
         return sharedPreferences.getString(TOKEN_KEY, null)
     }
 
-    private suspend fun fetchAnimals(token: String): List<Animal> {
+    private suspend fun fetchVets(token: String): List<Vet> {
         val request = Request.Builder()
-            .url("$backendUrl/animals/all")
+            .url("$backendUrl/vets/all")
             .header("Authorization", "Bearer $token")
             .build()
 
@@ -115,26 +106,24 @@ class MainActivity : ComponentActivity() {
                     val responseBody = response.body?.string()
                     try {
                         val jsonArray = JSONArray(responseBody ?: "[]")
-                        val animalsList = mutableListOf<Animal>()
+                        val vetsList = mutableListOf<Vet>()
                         for (i in 0 until jsonArray.length()) {
                             val jsonObject = jsonArray.getJSONObject(i)
-                            animalsList.add(
-                                Animal(
+                            val vetData = jsonObject.getJSONObject("vetData")
+                            vetsList.add(
+                                Vet(
                                     id = jsonObject.getString("_id"),
-                                    name = jsonObject.getString("name"),
-                                    species = jsonObject.getString("species"),
-                                    breed = jsonObject.getString("breed"),
-                                    age = jsonObject.getInt("age"),
-                                    weight = jsonObject.getDouble("weight"),
-                                    ownerId = jsonObject.getJSONObject("ownerId").getString("_id"),
-                                    ownerUsername = jsonObject.getString("ownerUsername"),
-                                    lastVisit = if (jsonObject.isNull("lastVisit")) null else jsonObject.getString("lastVisit")
+                                    username = jsonObject.getString("username"),
+                                    email = jsonObject.getString("email"),
+                                    role = jsonObject.getString("role"),
+                                    specialization = vetData.getString("specialization"),
+                                    contactInfo = vetData.getString("contactInfo")
                                 )
                             )
                         }
-                        continuation.resume(animalsList)
+                        continuation.resume(vetsList)
                     } catch (e: Exception) {
-                        Log.e(TAG, "Error parsing animals: ${e.message}", e)
+                        Log.e(TAG, "Error parsing vets: ${e.message}", e)
                         continuation.resume(emptyList())
                     }
                 }
@@ -143,14 +132,11 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-data class Animal(
+data class Vet(
     val id: String,
-    val name: String,
-    val species: String,
-    val breed: String,
-    val age: Int,
-    val weight: Double,
-    val ownerId: String,
-    val ownerUsername: String,
-    val lastVisit: String?
+    val username: String,
+    val email: String,
+    val role: String,
+    val specialization: String,
+    val contactInfo: String
 )
