@@ -1,15 +1,23 @@
 package com.example.vet_clinic.auth
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -24,11 +32,18 @@ class AuthActivity : ComponentActivity() {
     private val client = OkHttpClient()
     private val backendUrl = "http://10.0.2.2:5000/api"
 
+    companion object {
+        private const val TAG = "AuthActivity"
+        private const val PREFS_NAME = "AppPrefs"
+        private const val TOKEN_KEY = "auth_token"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             var username by remember { mutableStateOf("") }
             var password by remember { mutableStateOf("") }
+            var passwordVisible by remember { mutableStateOf(false) }
             var errorMessage by remember { mutableStateOf("") }
             val scope = rememberCoroutineScope()
 
@@ -57,8 +72,17 @@ class AuthActivity : ComponentActivity() {
                             value = password,
                             onValueChange = { password = it },
                             label = { Text("Password") },
-                            visualTransformation = PasswordVisualTransformation(),
-                            modifier = Modifier.padding(8.dp)
+                            modifier = Modifier.padding(8.dp),
+                            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                            trailingIcon = {
+                                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                    Icon(
+                                        imageVector = if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
+                                        contentDescription = if (passwordVisible) "Hide password" else "Show password"
+                                    )
+                                }
+                            }
                         )
                         Button(
                             onClick = {
@@ -99,6 +123,7 @@ class AuthActivity : ComponentActivity() {
         return suspendCancellableCoroutine { continuation ->
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
+                    Log.e(TAG, "Network error: ${e.message}", e)
                     continuation.resume("Network error: ${e.message}")
                 }
 
@@ -107,8 +132,14 @@ class AuthActivity : ComponentActivity() {
 
                     try {
                         val json = JSONObject(responseBody ?: "")
-
                         if (response.isSuccessful && json.has("token")) {
+                            val token = json.getString("token")
+                            val sharedPreferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+                            with(sharedPreferences.edit()) {
+                                putString(TOKEN_KEY, token)
+                                apply()
+                            }
+                            Log.d(TAG, "Token saved: $token")
                             val intent = Intent(this@AuthActivity, com.example.vet_clinic.MainActivity::class.java)
                             startActivity(intent)
                             finish()
@@ -119,6 +150,7 @@ class AuthActivity : ComponentActivity() {
                             continuation.resume("Unexpected server response")
                         }
                     } catch (e: Exception) {
+                        Log.e(TAG, "Error parsing response: ${e.message}", e)
                         continuation.resume("Invalid response format")
                     }
                 }
