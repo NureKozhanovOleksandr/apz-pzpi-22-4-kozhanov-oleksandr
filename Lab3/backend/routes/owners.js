@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 const User = require('../Models/User');
 const authMiddleware = require('../middleware/authMiddleware');
@@ -46,9 +47,11 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) 
   const { username, password, email, address } = req.body;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
     const newOwner = new User({
       username,
-      password,
+      password: hashedPassword,
       email,
       role: 'owner',
       ownerData: { address, animals: [] }

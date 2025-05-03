@@ -1,5 +1,6 @@
 package com.example.vet_clinic.auth
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -10,19 +11,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import io.github.cdimascio.dotenv.dotenv
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.*
 import org.json.JSONObject
 import java.io.IOException
+import kotlin.coroutines.resume
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class AuthActivity : ComponentActivity() {
     private val client = OkHttpClient()
-    private val dotenv = dotenv {
-        directory = "/assets"
-        ignoreIfMissing = true
-    }
-    private val backendUrl = dotenv["BACKEND_URL"] ?: "https://default-api-url"
+    private val backendUrl = "http://10.0.2.2:5000/api"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +42,11 @@ class AuthActivity : ComponentActivity() {
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        Text(
+                            text = "Vet Clinic",
+                            style = MaterialTheme.typography.headlineMedium,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
                         TextField(
                             value = username,
                             onValueChange = { username = it },
@@ -79,28 +84,45 @@ class AuthActivity : ComponentActivity() {
     }
 
     private suspend fun login(username: String, password: String): String {
-        val requestBody = FormBody.Builder()
-            .add("username", username)
-            .add("password", password)
-            .build()
+        val jsonBody = JSONObject().apply {
+            put("username", username)
+            put("password", password)
+        }
+
+        val requestBody = jsonBody.toString().toRequestBody("application/json".toMediaType())
 
         val request = Request.Builder()
             .url("$backendUrl/auth/login")
             .post(requestBody)
             .build()
 
-        return try {
-            val response = client.newCall(request).execute()
-            val json = JSONObject(response.body?.string() ?: "")
-            if (response.isSuccessful && json.getBoolean("success")) {
-                startActivity(android.content.Intent(this, com.example.vet_clinic.MainActivity::class.java))
-                finish()
-                ""
-            } else {
-                json.getString("message")
-            }
-        } catch (e: IOException) {
-            "Network error"
+        return suspendCancellableCoroutine { continuation ->
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    continuation.resume("Network error: ${e.message}")
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val responseBody = response.body?.string()
+
+                    try {
+                        val json = JSONObject(responseBody ?: "")
+
+                        if (response.isSuccessful && json.has("token")) {
+                            val intent = Intent(this@AuthActivity, com.example.vet_clinic.MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                            continuation.resume("")
+                        } else if (json.has("message")) {
+                            continuation.resume(json.getString("message"))
+                        } else {
+                            continuation.resume("Unexpected server response")
+                        }
+                    } catch (e: Exception) {
+                        continuation.resume("Invalid response format")
+                    }
+                }
+            })
         }
     }
 }
