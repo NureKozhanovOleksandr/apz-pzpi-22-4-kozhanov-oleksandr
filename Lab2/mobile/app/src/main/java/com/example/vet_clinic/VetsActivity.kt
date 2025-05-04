@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.vet_clinic.auth.AuthActivity
 import com.example.vet_clinic.ui.theme.NavBar
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -66,17 +65,17 @@ class VetsActivity : ComponentActivity() {
                                 .padding(vertical = 8.dp)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Text("Name", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text("Username", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(vet.username, fontSize = 18.sp)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Text("Email", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(vet.email, fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Specialization", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(vet.specialization, fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Contact Info", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(vet.contactInfo, fontSize = 18.sp)
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text("Email", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(vet.email, fontSize = 18.sp)
                             }
                         }
                     }
@@ -110,14 +109,14 @@ class VetsActivity : ComponentActivity() {
                         val vetsList = mutableListOf<Vet>()
                         for (i in 0 until jsonArray.length()) {
                             val jsonObject = jsonArray.getJSONObject(i)
-                            val vetData = jsonObject.getJSONObject("vetData")
+                            val vetData = if (jsonObject.isNull("vetData")) JSONObject() else jsonObject.getJSONObject("vetData")
                             vetsList.add(
                                 Vet(
-                                    id = jsonObject.getString("_id"),
-                                    username = jsonObject.getString("username"),
-                                    specialization = vetData.getString("specialization"),
-                                    contactInfo = vetData.getString("contactInfo"),
-                                    email = jsonObject.getString("email")
+                                    id = if (jsonObject.isNull("_id")) "" else jsonObject.getString("_id"),
+                                    username = if (jsonObject.isNull("username")) "Unknown" else jsonObject.getString("username"),
+                                    email = if (jsonObject.isNull("email")) "Unknown" else jsonObject.getString("email"),
+                                    specialization = if (vetData.isNull("specialization")) "Unknown" else vetData.getString("specialization"),
+                                    contactInfo = if (vetData.isNull("contactInfo")) "Not available" else vetData.getString("contactInfo")
                                 )
                             )
                         }
@@ -135,7 +134,7 @@ class VetsActivity : ComponentActivity() {
 data class Vet(
     val id: String,
     val username: String,
+    val email: String,
     val specialization: String,
-    val contactInfo: String,
-    val email: String
+    val contactInfo: String
 )

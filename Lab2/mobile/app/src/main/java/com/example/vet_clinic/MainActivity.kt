@@ -77,10 +77,10 @@ class MainActivity : ComponentActivity() {
                                 Text(animal.breed, fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Age", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(animal.age.toString(), fontSize = 18.sp)
+                                Text(animal.age?.toString() ?: "Not available", fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Weight", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(animal.weight.toString(), fontSize = 18.sp)
+                                Text(animal.weight?.toString() ?: "Not available", fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Owner", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(animal.ownerUsername, fontSize = 18.sp)
@@ -99,7 +99,7 @@ class MainActivity : ComponentActivity() {
                                     },
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .padding(vertical = 8.dp)
+                                        .padding(vertical = 12.dp)
                                 ) {
                                     Text("Appointments")
                                 }
@@ -136,16 +136,17 @@ class MainActivity : ComponentActivity() {
                         val animalsList = mutableListOf<Animal>()
                         for (i in 0 until jsonArray.length()) {
                             val jsonObject = jsonArray.getJSONObject(i)
+                            val ownerIdObj = if (jsonObject.isNull("ownerId")) null else jsonObject.getJSONObject("ownerId")
                             animalsList.add(
                                 Animal(
-                                    id = jsonObject.getString("_id"),
-                                    name = jsonObject.getString("name"),
-                                    species = jsonObject.getString("species"),
-                                    breed = jsonObject.getString("breed"),
-                                    age = jsonObject.getInt("age"),
-                                    weight = jsonObject.getDouble("weight"),
-                                    ownerId = jsonObject.getJSONObject("ownerId").getString("_id"),
-                                    ownerUsername = jsonObject.getString("ownerUsername"),
+                                    id = if (jsonObject.isNull("_id")) "" else jsonObject.getString("_id"),
+                                    name = if (jsonObject.isNull("name")) "Unknown" else jsonObject.getString("name"),
+                                    species = if (jsonObject.isNull("species")) "Unknown" else jsonObject.getString("species"),
+                                    breed = if (jsonObject.isNull("breed")) "Unknown" else jsonObject.getString("breed"),
+                                    age = if (jsonObject.isNull("age")) null else jsonObject.getInt("age"),
+                                    weight = if (jsonObject.isNull("weight")) null else jsonObject.getDouble("weight"),
+                                    ownerId = if (ownerIdObj == null || ownerIdObj.isNull("_id")) "" else ownerIdObj.getString("_id"),
+                                    ownerUsername = if (jsonObject.isNull("ownerUsername")) "Unknown" else jsonObject.getString("ownerUsername"),
                                     lastVisit = if (jsonObject.isNull("lastVisit")) null else jsonObject.getString("lastVisit"),
                                     currentTemperature = if (jsonObject.isNull("currentTemperature")) null else jsonObject.getDouble("currentTemperature")
                                 )
@@ -167,8 +168,8 @@ data class Animal(
     val name: String,
     val species: String,
     val breed: String,
-    val age: Int,
-    val weight: Double,
+    val age: Int?,
+    val weight: Double?,
     val ownerId: String,
     val ownerUsername: String,
     val lastVisit: String?,

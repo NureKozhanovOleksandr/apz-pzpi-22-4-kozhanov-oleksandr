@@ -75,6 +75,11 @@ class AppointmentsActivity : ComponentActivity() {
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Vet", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(appointment.vetName, fontSize = 18.sp)
+                                if (animalId == null) {
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Text("Animal", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                    Text(appointment.animalName, fontSize = 18.sp)
+                                }
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Reason", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(appointment.reason, fontSize = 18.sp)
@@ -156,16 +161,17 @@ class AppointmentsActivity : ComponentActivity() {
                             val jsonObject = jsonArray.getJSONObject(i)
                             appointmentsList.add(
                                 Appointment(
-                                    id = jsonObject.getString("_id"),
-                                    animalId = jsonObject.getString("animalId"),
-                                    vetId = jsonObject.getString("vetId"),
-                                    date = jsonObject.getString("date"),
-                                    vetName = jsonObject.getString("vetName"),
-                                    reason = jsonObject.getString("reason"),
+                                    id = if (jsonObject.isNull("_id")) "" else jsonObject.getString("_id"),
+                                    animalId = if (jsonObject.isNull("animalId")) "" else jsonObject.getString("animalId"),
+                                    vetId = if (jsonObject.isNull("vetId")) "" else jsonObject.getString("vetId"),
+                                    date = if (jsonObject.isNull("date")) "Unknown" else jsonObject.getString("date"),
+                                    vetName = if (jsonObject.isNull("vetName")) "Unknown" else jsonObject.getString("vetName"),
+                                    animalName = if (jsonObject.isNull("animalName")) "Unknown" else jsonObject.getString("animalName"),
+                                    reason = if (jsonObject.isNull("reason")) "Unknown" else jsonObject.getString("reason"),
                                     diagnosis = if (jsonObject.isNull("diagnosis")) null else jsonObject.getString("diagnosis"),
                                     treatment = if (jsonObject.isNull("treatment")) null else jsonObject.getString("treatment"),
                                     notes = if (jsonObject.isNull("notes")) null else jsonObject.getString("notes"),
-                                    status = jsonObject.getString("status")
+                                    status = if (jsonObject.isNull("status")) "Unknown" else jsonObject.getString("status")
                                 )
                             )
                         }
@@ -197,14 +203,14 @@ class AppointmentsActivity : ComponentActivity() {
                     val responseBody = response.body?.string()
                     try {
                         val jsonObject = JSONObject(responseBody ?: "{}")
-                        val vetData = jsonObject.getJSONObject("vetData")
+                        val vetData = if (jsonObject.isNull("vetData")) JSONObject() else jsonObject.getJSONObject("vetData")
                         continuation.resume(
                             Vet(
-                                id = jsonObject.getString("_id"),
-                                username = jsonObject.getString("username"),
-                                email = jsonObject.getString("email"),
-                                specialization = vetData.getString("specialization"),
-                                contactInfo = vetData.getString("contactInfo")
+                                id = if (jsonObject.isNull("_id")) "" else jsonObject.getString("_id"),
+                                username = if (jsonObject.isNull("username")) "Unknown" else jsonObject.getString("username"),
+                                email = if (jsonObject.isNull("email")) "Unknown" else jsonObject.getString("email"),
+                                specialization = if (vetData.isNull("specialization")) "Unknown" else vetData.getString("specialization"),
+                                contactInfo = if (vetData.isNull("contactInfo")) "Not available" else vetData.getString("contactInfo")
                             )
                         )
                     } catch (e: Exception) {
@@ -223,6 +229,7 @@ data class Appointment(
     val vetId: String,
     val date: String,
     val vetName: String,
+    val animalName: String,
     val reason: String,
     val diagnosis: String?,
     val treatment: String?,
