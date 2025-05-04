@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,7 +39,11 @@ fun NavBar(
         drawerContent = {
             ModalDrawerSheet {
                 Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp)) {
-                    Text("Menu", fontSize = 20.sp)
+                    Text(
+                        "Menu",
+                        fontSize = 20.sp,
+                        modifier = Modifier.padding(start = 16.dp, top = 16.dp, bottom = 8.dp)
+                    )
                     NavigationDrawerItem(
                         label = { Text("Animals") },
                         selected = title == "animals",
@@ -77,10 +82,16 @@ fun NavBar(
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     NavigationDrawerItem(
-                        label = { Text("Logout") },
+                        label = { Text(
+                            "Logout",
+                            fontSize = 18.sp,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onError,
+                            modifier = Modifier.fillMaxWidth()
+                        ) },
                         selected = false,
                         colors = NavigationDrawerItemDefaults.colors(
-                            unselectedContainerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f)
+                            unselectedContainerColor = MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
                         ),
                         modifier = Modifier.fillMaxWidth(),
                         onClick = {

@@ -41,6 +41,8 @@ class AppointmentsActivity : ComponentActivity() {
         setContent {
             var appointments by remember { mutableStateOf<List<Appointment>>(emptyList()) }
             val scope = rememberCoroutineScope()
+            var showVetDialog by remember { mutableStateOf(false) }
+            var selectedVet by remember { mutableStateOf<Vet?>(null) }
 
             LaunchedEffect(Unit) {
                 Log.d(TAG, "LaunchedEffect started")
@@ -88,9 +90,39 @@ class AppointmentsActivity : ComponentActivity() {
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Status", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(appointment.status, fontSize = 18.sp)
+                                Button(
+                                    onClick = {
+                                        scope.launch {
+                                            selectedVet = fetchVet(appointment.vetId)
+                                            showVetDialog = true
+                                        }
+                                    },
+                                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp)
+                                ) {
+                                    Text("Show Vet")
+                                }
                             }
                         }
                     }
+                }
+                if (showVetDialog && selectedVet != null) {
+                    AlertDialog(
+                        onDismissRequest = { showVetDialog = false },
+                        title = { Text("Vet details") },
+                        text = {
+                            Column {
+                                Text("Username: ${selectedVet!!.username}", fontSize = 16.sp)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text("Email: ${selectedVet!!.email}", fontSize = 16.sp)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text("Specialization: ${selectedVet!!.specialization}", fontSize = 16.sp)
+                                Spacer(modifier = Modifier.height(8.dp))
+                                Text("Contact Info: ${selectedVet!!.contactInfo}", fontSize = 16.sp)
+                            }
+                        },
+                        confirmButton = {},
+                        dismissButton = {}
+                    )
                 }
             }
         }
@@ -141,6 +173,43 @@ class AppointmentsActivity : ComponentActivity() {
                     } catch (e: Exception) {
                         Log.e(TAG, "Error parsing appointments: ${e.message}", e)
                         continuation.resume(emptyList())
+                    }
+                }
+            })
+        }
+    }
+
+    private suspend fun fetchVet(vetId: String): Vet? {
+        val token = getToken() ?: return null
+        val request = Request.Builder()
+            .url("$backendUrl/vets/$vetId")
+            .header("Authorization", "Bearer $token")
+            .build()
+
+        return suspendCancellableCoroutine { continuation ->
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.e(TAG, "Network error: ${e.message}", e)
+                    continuation.resume(null)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val responseBody = response.body?.string()
+                    try {
+                        val jsonObject = JSONObject(responseBody ?: "{}")
+                        val vetData = jsonObject.getJSONObject("vetData")
+                        continuation.resume(
+                            Vet(
+                                id = jsonObject.getString("_id"),
+                                username = jsonObject.getString("username"),
+                                email = jsonObject.getString("email"),
+                                specialization = vetData.getString("specialization"),
+                                contactInfo = vetData.getString("contactInfo")
+                            )
+                        )
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error parsing vet: ${e.message}", e)
+                        continuation.resume(null)
                     }
                 }
             })

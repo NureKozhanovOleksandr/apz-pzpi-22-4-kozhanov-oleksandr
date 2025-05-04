@@ -97,7 +97,9 @@ class MainActivity : ComponentActivity() {
                                         intent.putExtra("animalName", animal.name)
                                         startActivity(intent)
                                     },
-                                    modifier = Modifier.fillMaxWidth()
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 8.dp)
                                 ) {
                                     Text("Appointments")
                                 }
