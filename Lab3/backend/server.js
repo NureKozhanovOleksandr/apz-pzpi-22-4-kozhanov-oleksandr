@@ -35,11 +35,11 @@ const iotRoutes = require('./routes/iot');
 app.use('/api/auth', authRoutes);
 
 // Protected routes
-app.use('/api/animals', authMiddleware, animalRoutes);
+app.use('/api/animals', authMiddleware, roleMiddleware(['admin', 'owner']), animalRoutes);
 app.use('/api/healthrecords', authMiddleware, healthRecordRoutes);
-app.use('/api/appointments', authMiddleware, appointmentRoutes);
-app.use('/api/vets', authMiddleware, roleMiddleware(['admin']), vetRoutes);
-app.use('/api/owners', authMiddleware, roleMiddleware(['admin', 'vet']), ownerRoutes);
+app.use('/api/appointments', authMiddleware, roleMiddleware(['admin', 'owner']), appointmentRoutes);
+app.use('/api/vets', authMiddleware, roleMiddleware(['admin', 'owner']), vetRoutes);
+app.use('/api/owners', authMiddleware, roleMiddleware(['admin']), ownerRoutes);
 app.use('/api/iot', iotRoutes);
 
 const PORT = process.env.PORT || 5000;

@@ -8,15 +8,28 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 /**
  * @route GET /api/animals/all
  * @desc Get all animals with owner username
- * @access Private (admin)
+ * @access Private (admin, owner)
  */
 router.get('/all', authMiddleware, roleMiddleware(['admin', 'owner']), async (req, res) => {
   try {
-    const animals = await Animal.find().populate('ownerId', 'username');
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    let animals;
+
+    if (userRole === 'owner') {
+      animals = await Animal.find({ ownerId: userId }).populate('ownerId', 'username');
+    } else if (userRole === 'admin') {
+      animals = await Animal.find().populate('ownerId', 'username');
+    } else {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
     const transformedAnimals = animals.map((animal) => ({
       ...animal.toObject(),
       ownerUsername: animal.ownerId?.username || null,
     }));
+
     res.json(transformedAnimals);
   } catch (err) {
     res.status(500).json({ message: err.message });
