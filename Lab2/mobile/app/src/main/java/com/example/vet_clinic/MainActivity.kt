@@ -42,15 +42,17 @@ class MainActivity : ComponentActivity() {
             val scope = rememberCoroutineScope()
 
             LaunchedEffect(Unit) {
+                Log.d(TAG, "LaunchedEffect started")
                 val token = getToken()
                 if (token != null) {
                     animals = fetchAnimals(token)
+                    Log.d(TAG, "Animals updated: ${animals.size} items")
+                } else {
+                    Log.d(TAG, "Token is null")
                 }
             }
 
-            Scaffold(
-                topBar = { NavBar(title = "animals", onMenuClick = { /* TODO: Open drawer */ }) }
-            ) { padding ->
+            NavBar(title = "animals", prefsName = PREFS_NAME, tokenKey = TOKEN_KEY) { padding ->
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()

@@ -14,10 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.vet_clinic.auth.AuthActivity
 import com.example.vet_clinic.ui.theme.NavBar
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
 import okhttp3.*
 import org.json.JSONArray
+import org.json.JSONObject
 import java.io.IOException
 import kotlin.coroutines.resume
 
@@ -38,17 +41,18 @@ class VetsActivity : ComponentActivity() {
             var vets by remember { mutableStateOf<List<Vet>>(emptyList()) }
             val scope = rememberCoroutineScope()
 
-            // Загрузка врачей при старте
             LaunchedEffect(Unit) {
+                Log.d(TAG, "LaunchedEffect started")
                 val token = getToken()
                 if (token != null) {
                     vets = fetchVets(token)
+                    Log.d(TAG, "Vets updated: ${vets.size} items")
+                } else {
+                    Log.d(TAG, "Token is null")
                 }
             }
 
-            Scaffold(
-                topBar = { NavBar(title = "animals", onMenuClick = { /* TODO: Open drawer */ }) }
-            ) { padding ->
+            NavBar(title = "veterinarians", prefsName = PREFS_NAME, tokenKey = TOKEN_KEY) { padding ->
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxSize()
@@ -62,20 +66,17 @@ class VetsActivity : ComponentActivity() {
                                 .padding(vertical = 8.dp)
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
-                                Text("Username", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(vet.username, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text("Email", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(vet.email, fontSize = 18.sp)
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text("Role", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(vet.role, fontSize = 18.sp)
+                                Text("Name", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(vet.username, fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Specialization", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(vet.specialization, fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Contact Info", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(vet.contactInfo, fontSize = 18.sp)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Text("Email", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(vet.email, fontSize = 18.sp)
                             }
                         }
                     }
@@ -114,10 +115,9 @@ class VetsActivity : ComponentActivity() {
                                 Vet(
                                     id = jsonObject.getString("_id"),
                                     username = jsonObject.getString("username"),
-                                    email = jsonObject.getString("email"),
-                                    role = jsonObject.getString("role"),
                                     specialization = vetData.getString("specialization"),
-                                    contactInfo = vetData.getString("contactInfo")
+                                    contactInfo = vetData.getString("contactInfo"),
+                                    email = jsonObject.getString("email")
                                 )
                             )
                         }
@@ -135,8 +135,7 @@ class VetsActivity : ComponentActivity() {
 data class Vet(
     val id: String,
     val username: String,
-    val email: String,
-    val role: String,
     val specialization: String,
-    val contactInfo: String
+    val contactInfo: String,
+    val email: String
 )
