@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.layout.PaddingValues
+import com.example.vet_clinic.AppointmentsActivity
 import com.example.vet_clinic.MainActivity
 import com.example.vet_clinic.VetsActivity
 import com.example.vet_clinic.auth.AuthActivity
@@ -58,6 +59,18 @@ fun NavBar(
                                 drawerState.close()
                                 if (title != "veterinarians") {
                                     context.startActivity(Intent(context, VetsActivity::class.java))
+                                }
+                            }
+                        }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Appointments") },
+                        selected = title == "appointments",
+                        onClick = {
+                            scope.launch {
+                                drawerState.close()
+                                if (title != "appointments") {
+                                    context.startActivity(Intent(context, AppointmentsActivity::class.java))
                                 }
                             }
                         }

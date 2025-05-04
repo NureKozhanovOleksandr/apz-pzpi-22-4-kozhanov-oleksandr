@@ -1,6 +1,7 @@
 package com.example.vet_clinic
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -89,6 +90,17 @@ class MainActivity : ComponentActivity() {
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Current Temperature", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(animal.currentTemperature?.toString() ?: "Not available", fontSize = 18.sp)
+                                Button(
+                                    onClick = {
+                                        val intent = Intent(this@MainActivity, AppointmentsActivity::class.java)
+                                        intent.putExtra("animalId", animal.id)
+                                        intent.putExtra("animalName", animal.name)
+                                        startActivity(intent)
+                                    },
+                                    modifier = Modifier.fillMaxWidth()
+                                ) {
+                                    Text("Appointments")
+                                }
                             }
                         }
                     }

@@ -2,23 +2,76 @@ const express = require('express');
 const router = express.Router();
 const Appointment = require('../Models/Appointment');
 const Animal = require('../Models/Animal');
+const User = require('../Models/User');
 const authMiddleware = require('../middleware/authMiddleware');
 const roleMiddleware = require('../middleware/roleMiddleware');
 
 /**
  * @route GET /api/appointments/all
- * @desc Get all appointments
- * @access Private (owner, vet)
+ * @desc Get all appointments with vetId and animalId
+ * @access Private (owner, admin)
  */
 router.get('/all', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
   try {
-    const appointments = await Appointment.find()
+    const userId = req.user.id;
+    const userRole = req.user.role;
+
+    let appointments;
+
+    if (userRole === 'owner') {
+      const owner = await User.findById(userId).select('ownerData.animals');
+      if (!owner) return res.status(404).json({ message: 'Owner not found' });
+
+      const animalIds = owner.ownerData.animals;
+      appointments = await Appointment.find({ animalId: { $in: animalIds } })
+        .populate('animalId', 'name')
+        .populate('vetId', 'username');
+    } else if (userRole === 'admin') {
+      appointments = await Appointment.find()
+        .populate('animalId', 'name')
+        .populate('vetId', 'username');
+    } else {
+      return res.status(403).json({ message: 'Access denied' });
+    }
+
+    const transformedAppointments = appointments.map((appointment) => ({
+      _id: appointment._id,
+      animalId: appointment.animalId?._id || null,
+      animalName: appointment.animalId?.name || 'Unknown Animal',
+      vetId: appointment.vetId?._id || null,
+      vetName: appointment.vetId?.username || 'Unknown Vet',
+      date: appointment.date,
+      reason: appointment.reason,
+      diagnosis: appointment.diagnosis || '',
+      treatment: appointment.treatment || '',
+      notes: appointment.notes || '',
+      status: appointment.status,
+    }));
+
+    res.json(transformedAppointments);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+/**
+ * @route GET /api/appointments/animal/:id
+ * @desc Get all appointments for a specific animal
+ * @access Private (owner, admin)
+ */
+router.get('/animal/:id', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
+  try {
+    const animalId = req.params.id;
+
+    const appointments = await Appointment.find({ animalId })
       .populate('animalId', 'name')
       .populate('vetId', 'username');
 
     const transformedAppointments = appointments.map((appointment) => ({
       _id: appointment._id,
+      animalId: appointment.animalId?._id || null,
       animalName: appointment.animalId?.name || 'Unknown Animal',
+      vetId: appointment.vetId?._id || null,
       vetName: appointment.vetId?.username || 'Unknown Vet',
       date: appointment.date,
       reason: appointment.reason,
