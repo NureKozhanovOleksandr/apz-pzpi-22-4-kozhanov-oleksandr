@@ -7,7 +7,7 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 
 /**
  * @route GET /api/animals/all
- * @desc Get all animals with owner username
+ * @desc Get all animals with owner username and current temperature
  * @access Private (admin, owner)
  */
 router.get('/all', authMiddleware, roleMiddleware(['admin', 'owner']), async (req, res) => {
@@ -25,12 +25,21 @@ router.get('/all', authMiddleware, roleMiddleware(['admin', 'owner']), async (re
       return res.status(403).json({ message: 'Access denied' });
     }
 
-    const transformedAnimals = animals.map((animal) => ({
-      ...animal.toObject(),
-      ownerUsername: animal.ownerId?.username || null,
-    }));
+    const animalsWithTemperature = await Promise.all(
+      animals.map(async (animal) => {
+        const latestHealthRecord = await HealthRecord.findOne({ animalId: animal._id })
+          .sort({ date: -1 })
+          .select('temperature');
 
-    res.json(transformedAnimals);
+        return {
+          ...animal.toObject(),
+          ownerUsername: animal.ownerId?.username || null,
+          currentTemperature: latestHealthRecord?.temperature || null,
+        };
+      })
+    );
+
+    res.json(animalsWithTemperature);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

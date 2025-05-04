@@ -28,7 +28,7 @@ router.post('/bind', authMiddleware, roleMiddleware(['admin']), async (req, res)
 
 /**
  * @route POST /api/iot/temperature
- * @desc Save temperature data from IOT device
+ * @desc Save or update temperature data for an animal
  * @access Private (iot)
  */
 router.post('/temperature', async (req, res) => {
@@ -40,12 +40,18 @@ router.post('/temperature', async (req, res) => {
       return res.status(404).json({ message: 'Device not found' });
     }
 
-    const healthRecord = new HealthRecord({
-      animalId: device.animalId,
-      date: new Date(),
-      temperature
-    });
-    await healthRecord.save();
+    const animalId = device.animalId;
+
+    await HealthRecord.findOneAndUpdate(
+      { animalId },
+      { 
+        animalId, 
+        date: new Date(),
+        temperature 
+      },
+      { new: true, upsert: true }
+    );
+
     res.status(201).json({ message: 'Temperature data saved successfully' });
   } catch (error) {
     res.status(500).json({ message: 'Error saving temperature data', error });
