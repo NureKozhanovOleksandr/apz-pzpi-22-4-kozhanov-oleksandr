@@ -41,7 +41,6 @@ class MainActivity : ComponentActivity() {
             var animals by remember { mutableStateOf<List<Animal>>(emptyList()) }
             val scope = rememberCoroutineScope()
 
-            // Загрузка животных при старте
             LaunchedEffect(Unit) {
                 val token = getToken()
                 if (token != null) {
@@ -85,6 +84,9 @@ class MainActivity : ComponentActivity() {
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Last Visit", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(animal.lastVisit ?: "No visits", fontSize = 18.sp)
+                                Spacer(modifier = Modifier.height(12.dp))
+                                Text("Current Temperature", fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                                Text(animal.currentTemperature?.toString() ?: "Not available", fontSize = 18.sp)
                             }
                         }
                     }
@@ -128,7 +130,8 @@ class MainActivity : ComponentActivity() {
                                     weight = jsonObject.getDouble("weight"),
                                     ownerId = jsonObject.getJSONObject("ownerId").getString("_id"),
                                     ownerUsername = jsonObject.getString("ownerUsername"),
-                                    lastVisit = if (jsonObject.isNull("lastVisit")) null else jsonObject.getString("lastVisit")
+                                    lastVisit = if (jsonObject.isNull("lastVisit")) null else jsonObject.getString("lastVisit"),
+                                    currentTemperature = if (jsonObject.isNull("currentTemperature")) null else jsonObject.getDouble("currentTemperature")
                                 )
                             )
                         }
@@ -152,5 +155,6 @@ data class Animal(
     val weight: Double,
     val ownerId: String,
     val ownerUsername: String,
-    val lastVisit: String?
+    val lastVisit: String?,
+    val currentTemperature: Double?
 )
