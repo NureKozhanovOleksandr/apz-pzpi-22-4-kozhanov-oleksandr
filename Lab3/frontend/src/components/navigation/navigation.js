@@ -15,8 +15,7 @@ import { FaDog } from "react-icons/fa6";
 import { MdOutlineAssignment } from "react-icons/md";
 import Modal from '../modal';
 import api from '../../configs/api';
-import { useForm } from "react-hook-form";
-import { FiEye, FiEyeOff } from "react-icons/fi";
+import BackupManager from './backup';
 
 const Navigation = ({ changeLanguage }) => {
   const { t, i18n } = useTranslation();
@@ -28,10 +27,6 @@ const Navigation = ({ changeLanguage }) => {
   const [isAccordionOpen, setIsAccordionOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [notification, setNotification] = useState({ isOpen: false, message: "" });
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-
-  const { register, handleSubmit, formState: { errors }, reset } = useForm();
 
   useEffect(() => {
     if (i18n.isInitialized) {
@@ -75,24 +70,6 @@ const Navigation = ({ changeLanguage }) => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
-  };
-
-  const onSubmit = async (data) => {
-    try {
-      const response = await api.put('/update_password', {
-        old_password: data.oldPassword,
-        new_password: data.newPassword,
-      });
-      if (response.status === 200) {
-        setNotification({ isOpen: true, message: t("notification.passwordUpdated") });
-        setTimeout(() => {
-          toggleAccordion();
-          reset();
-        }, 700);
-      }
-    } catch (error) {
-      setNotification({ isOpen: true, message: t("notification.passwordUpdateFailed") });
-    }
   };
 
   const getActiveLink = (path) => {
@@ -174,45 +151,7 @@ const Navigation = ({ changeLanguage }) => {
             />
             {isAccordionOpen && (
               <div className='accordion-content'>
-                <form className='form' onSubmit={handleSubmit(onSubmit)}>
-                  <div className='form-group'>
-                    <input
-                      type={showOldPassword ? 'text' : 'password'}
-                      {...register('oldPassword', {
-                        required: t('login.passwordRequired'),
-                        minLength: { value: 8, message: t('login.passwordMinLength', { length: 8 }) },
-                      })}
-                      placeholder={t('navigation.oldPassword')}
-                    />
-                    <button
-                      type="button"
-                      className="icon"
-                      onClick={() => setShowOldPassword(!showOldPassword)}
-                    >
-                      {showOldPassword ? <FiEyeOff /> : <FiEye />}
-                    </button>
-                  </div>
-                  {errors.oldPassword && <p className="error">{errors.oldPassword.message}</p>}
-                  <div className='form-group'>
-                    <input
-                      type={showNewPassword ? 'text' : 'password'}
-                      {...register('newPassword', {
-                        required: t('login.passwordRequired'),
-                        minLength: { value: 8, message: t('login.passwordMinLength', { length: 8 }) },
-                      })}
-                      placeholder={t('navigation.newPassword')}
-                    />
-                    <button
-                      type="button"
-                      className="icon"
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                    >
-                      {showNewPassword ? <FiEyeOff /> : <FiEye />}
-                    </button>
-                  </div>
-                  {errors.newPassword && <p className="error">{errors.newPassword.message}</p>}
-                  <button type='submit'>{t('navigation.changePassword')}</button>
-                </form>
+                <BackupManager />
                 <LanguageSwitcher changeLanguage={changeLanguage} />
               </div>
             )}

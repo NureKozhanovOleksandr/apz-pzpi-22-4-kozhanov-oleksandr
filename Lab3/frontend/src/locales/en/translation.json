@@ -113,7 +113,7 @@
     "deleteAppointmentConfirmation": "Are you sure you want to delete this appointment?",
     "confirm": "Confirm",
     "cancel": "Cancel",
-    "edit":"Edit",
+    "edit": "Edit",
     "noDiagnosis": "No diagnosis",
     "noTreatment": "No treatment",
     "noNotes": "No notes"
@@ -248,5 +248,15 @@
     "updatedSuccessfully": "Appointment updated successfully",
     "failedToSave": "Failed to save appointment",
     "loadingData": "Loading data..."
+  },
+  "backup": {
+    "title": "Backup Manager",
+    "export": "Export",
+    "import": "Import",
+    "enterPath": "Enter directory path",
+    "exportSuccess": "Backup exported successfully",
+    "exportFailed": "Failed to export backup",
+    "importSuccess": "Backup imported successfully",
+    "importFailed": "Failed to import backup"
   }
 }
