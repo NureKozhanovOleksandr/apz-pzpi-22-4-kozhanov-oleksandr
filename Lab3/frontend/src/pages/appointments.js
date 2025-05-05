@@ -17,7 +17,11 @@ const Appointments = () => {
   const columnDefs = [
     { field: "animal", headerName: t("appointments.animal") },
     { field: "vet", headerName: t("appointments.vet") },
-    { field: "date", headerName: t("appointments.date") },
+    { 
+      field: "date", 
+      headerName: t("appointments.date"), 
+      valueFormatter: (params) => new Date(params.value).toLocaleString()
+    },
     { field: "reason", headerName: t("appointments.reason") },
     { field: "diagnosis", headerName: t("appointments.diagnosis") },
     { field: "treatment", headerName: t("appointments.treatment") },
@@ -91,7 +95,7 @@ const Appointments = () => {
             _id: appointment._id,
             animal: appointment.animalName,
             vet: appointment.vetName,
-            date: new Date(appointment.date).toLocaleDateString(),
+            date: appointment.date,
             reason: appointment.reason,
             diagnosis: appointment.diagnosis || t("appointments.noDiagnosis"),
             treatment: appointment.treatment || t("appointments.noTreatment"),
