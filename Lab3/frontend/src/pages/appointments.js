@@ -4,6 +4,7 @@ import api from "../configs/api";
 import Modal from "../components/modal";
 import { useTranslation } from "react-i18next";
 import AppointmentForm from "../components/forms/appointment";
+import { useAuth } from '../contexts/authContext';
 
 const Appointments = () => {
   const { t } = useTranslation();
@@ -13,13 +14,14 @@ const Appointments = () => {
   const [addAppointmentModal, setAddAppointmentModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const { userData } = useAuth();
 
   const columnDefs = [
     { field: "animal", headerName: t("appointments.animal") },
     { field: "vet", headerName: t("appointments.vet") },
-    { 
-      field: "date", 
-      headerName: t("appointments.date"), 
+    {
+      field: "date",
+      headerName: t("appointments.date"),
       valueFormatter: (params) => new Date(params.value).toLocaleString()
     },
     { field: "reason", headerName: t("appointments.reason") },
@@ -27,40 +29,45 @@ const Appointments = () => {
     { field: "treatment", headerName: t("appointments.treatment") },
     { field: "notes", headerName: t("appointments.notes") },
     { field: "status", headerName: t("appointments.status") },
-    {
-      field: "edit",
-      headerName: "",
-      cellRenderer: (params) => (
-        <button
-          className="row-btn edit"
-          onClick={() => {
-            setEditData(params.data);
-            setEditModal(true);
-          }}
-        >
-          {t("appointments.edit")}
-        </button>
-      ),
-      width: 100,
-      filter: false,
-      cellStyle: { textAlign: "center" },
-    },
-    {
-      field: "delete",
-      headerName: "",
-      cellRenderer: (params) => (
-        <button
-          className="row-btn delete"
-          onClick={() => setConfirmModal({ isOpen: true, appointmentId: params.data._id })}
-        >
-          {t("appointments.deleteAppointment")}
-        </button>
-      ),
-      width: 100,
-      filter: false,
-      cellStyle: { textAlign: "center" },
-    },
   ];
+
+  if (userData?.role === 'vet') {
+    columnDefs.push(
+      {
+        field: "edit",
+        headerName: "",
+        cellRenderer: (params) => (
+          <button
+            className="row-btn edit"
+            onClick={() => {
+              setEditData(params.data);
+              setEditModal(true);
+            }}
+          >
+            {t("appointments.edit")}
+          </button>
+        ),
+        width: 100,
+        filter: false,
+        cellStyle: { textAlign: "center" },
+      },
+      {
+        field: "delete",
+        headerName: "",
+        cellRenderer: (params) => (
+          <button
+            className="row-btn delete"
+            onClick={() => setConfirmModal({ isOpen: true, appointmentId: params.data._id })}
+          >
+            {t("appointments.deleteAppointment")}
+          </button>
+        ),
+        width: 100,
+        filter: false,
+        cellStyle: { textAlign: "center" },
+      },
+    );
+  }
 
   const handleDeleteAppointment = async (appointmentId) => {
     try {
@@ -104,7 +111,7 @@ const Appointments = () => {
           }))
         }
         refreshKey={refreshKey}
-        showActions={true}
+        showActions={userData?.role === 'vet'}
         onAddClick={() => setAddAppointmentModal(true)}
       />
       <Modal
