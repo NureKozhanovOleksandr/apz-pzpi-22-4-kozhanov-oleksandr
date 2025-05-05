@@ -9,9 +9,9 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 /**
  * @route GET /api/appointments/all
  * @desc Get all appointments with vetId and animalId
- * @access Private (owner, admin)
+ * @access Private (owner, admin, vet)
  */
-router.get('/all', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
+router.get('/all', authMiddleware, roleMiddleware(['owner', 'admin', 'vet']), async (req, res) => {
   try {
     const userId = req.user.id;
     const userRole = req.user.role;
@@ -26,7 +26,7 @@ router.get('/all', authMiddleware, roleMiddleware(['owner', 'admin']), async (re
       appointments = await Appointment.find({ animalId: { $in: animalIds } })
         .populate('animalId', 'name')
         .populate('vetId', 'username');
-    } else if (userRole === 'admin') {
+    } else if (userRole === 'admin' || userRole === 'vet') {
       appointments = await Appointment.find()
         .populate('animalId', 'name')
         .populate('vetId', 'username');
@@ -57,9 +57,9 @@ router.get('/all', authMiddleware, roleMiddleware(['owner', 'admin']), async (re
 /**
  * @route GET /api/appointments/animal/:id
  * @desc Get all appointments for a specific animal
- * @access Private (owner, admin)
+ * @access Private (owner, admin, vet)
  */
-router.get('/animal/:id', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
+router.get('/animal/:id', authMiddleware, roleMiddleware(['owner', 'admin', 'vet']), async (req, res) => {
   try {
     const animalId = req.params.id;
 
@@ -90,9 +90,9 @@ router.get('/animal/:id', authMiddleware, roleMiddleware(['owner', 'admin']), as
 /**
  * @route GET /api/appointments/:id
  * @desc Get appointment by ID
- * @access Private (owner, vet)
+ * @access Private (owner, vet, admin)
  */
-router.get('/:id', authMiddleware, roleMiddleware(['owner', 'admin']), async (req, res) => {
+router.get('/:id', authMiddleware, roleMiddleware(['owner', 'admin', 'vet']), async (req, res) => {
   try {
     const appointment = await Appointment.findById(req.params.id);
     if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
@@ -105,9 +105,9 @@ router.get('/:id', authMiddleware, roleMiddleware(['owner', 'admin']), async (re
 /**
  * @route POST /api/appointments/add
  * @desc Create a new appointment
- * @access Private (admin)
+ * @access Private (vet)
  */
-router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+router.post('/add', authMiddleware, roleMiddleware(['vet']), async (req, res) => {
   const appointment = new Appointment({
     animalId: req.body.animalId,
     vetId: req.body.vetId,
@@ -137,9 +137,9 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) 
 /**
  * @route DELETE /api/appointments/:id
  * @desc Delete an appointment
- * @access Private (admin)
+ * @access Private (vet)
  */
-router.delete('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+router.delete('/:id', authMiddleware, roleMiddleware(['vet']), async (req, res) => {
   try {
     const appointment = await Appointment.findByIdAndDelete(req.params.id);
     if (!appointment) return res.status(404).json({ message: 'Appointment not found' });
@@ -152,9 +152,9 @@ router.delete('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res
 /**
  * @route PUT /api/appointments/:id
  * @desc Edit an appointment
- * @access Private (admin)
+ * @access Private (vet)
  */
-router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+router.put('/:id', authMiddleware, roleMiddleware(['vet']), async (req, res) => {
   try {
     const { vetId, animalId, date, ...updateData } = req.body;
 

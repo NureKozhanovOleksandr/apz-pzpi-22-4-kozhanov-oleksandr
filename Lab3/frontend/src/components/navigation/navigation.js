@@ -103,9 +103,13 @@ const Navigation = ({ changeLanguage }) => {
     if (userEmail) {
       return userEmail;
     }
-    if (getActiveLink('/customers') === 'active') return t('navigation.customers');
-    if (getActiveLink('/admins') === 'active') return t('navigation.admins');
-    if (getActiveLink('/subscriptions') === 'active') return t('navigation.subscriptions');
+
+    if (getActiveLink('/vets') === 'active') return t('navigation.vets');
+    if (getActiveLink('/animals') === 'active') return t('navigation.animals');
+    if (getActiveLink('/appointments') === 'active') return t('navigation.appointments');
+    if (getActiveLink('/owners') === 'active') return t('navigation.owners');
+    if (getActiveLink('/health-records') === 'active') return t('navigation.healthRecords');
+
     return 'vet clinic';
   };
 

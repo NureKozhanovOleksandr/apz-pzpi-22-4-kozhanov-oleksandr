@@ -8,18 +8,17 @@ const roleMiddleware = require('../middleware/roleMiddleware');
 /**
  * @route GET /api/vets/all
  * @desc Get all vets
- * @access Private (admin)
+ * @access Private (admin, owner, vet)
  */
-router.get('/all', authMiddleware, roleMiddleware(['admin', 'owner']), async (req, res) => {
+router.get('/all', authMiddleware, roleMiddleware(['admin', 'owner', 'vet']), async (req, res) => {
   try {
-    const vets = await User.find({ role: 'admin' });
-    const updatedVets = vets.filter(vet => vet.username !== 'admin');
-    updatedVets.forEach(vet => {
+    const vets = await User.find({ role: 'vet' });
+    vets.forEach(vet => {
       vet.ownerData = undefined;
       vet.password = undefined;
       vet.__v = undefined;
     });
-    res.json(updatedVets);
+    res.json(vets);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -28,11 +27,11 @@ router.get('/all', authMiddleware, roleMiddleware(['admin', 'owner']), async (re
 /**
  * @route GET /api/vets/:id
  * @desc Get vet by ID
- * @access Private (admin)
+ * @access Private (admin, owner, vet)
  */
-router.get('/:id', authMiddleware, roleMiddleware(['admin', 'owner']), async (req, res) => {
+router.get('/:id', authMiddleware, roleMiddleware(['admin', 'owner', 'vet']), async (req, res) => {
   try {
-    const vet = await User.findOne({ _id: req.params.id, role: 'admin' });
+    const vet = await User.findOne({ _id: req.params.id, role: 'vet' });
     if (!vet) return res.status(404).json({ message: 'Vet not found' });
     res.json(vet);
   } catch (err) {
@@ -55,7 +54,7 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) 
       username,
       password: hashedPassword,
       email,
-      role: 'admin',
+      role: 'vet',
       vetData: { specialization, contactInfo }
     });
 
@@ -76,7 +75,7 @@ router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) =
 
   try {
     const updatedVet = await User.findOneAndUpdate(
-      { _id: req.params.id, role: 'admin' },
+      { _id: req.params.id, role: 'vet' },
       { email, vetData: { specialization, contactInfo } },
       { new: true }
     );
@@ -94,7 +93,7 @@ router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) =
  */
 router.delete('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
   try {
-    const vet = await User.findOne({ _id: req.params.id, role: 'admin' });
+    const vet = await User.findOne({ _id: req.params.id, role: 'vet' });
     if (!vet) return res.status(404).json({ message: 'Vet not found' });
 
     await vet.deleteOne();
