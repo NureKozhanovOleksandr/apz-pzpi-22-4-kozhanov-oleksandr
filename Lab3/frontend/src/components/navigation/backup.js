@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '../../configs/api';
 import { useNavigate } from 'react-router-dom';
+import './backup.css';
 
 const BackupManager = () => {
   const { t } = useTranslation();
   const [notification, setNotification] = useState({ isOpen: false, message: '' });
   const [importPath, setImportPath] = useState('');
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleExportBackup = async () => {
     try {
@@ -52,25 +53,25 @@ const BackupManager = () => {
   };
 
   return (
-    <div>
-      <h2>{t('backup.title')}</h2>
+    <div className="backup-manager">
+      <span>{t('backup.title')}</span>
       <button onClick={handleExportBackup}>{t('backup.export')}</button>
-      <div style={{ margin: '10px 0' }}>
+      <div className="import-section">
         <input
           type="text"
           value={importPath}
           onChange={(e) => setImportPath(e.target.value)}
           placeholder={t('backup.enterPath')}
-          style={{ marginRight: '10px' }}
+          className="import-path-input"
         />
         <button onClick={handleImportBackup} disabled={!importPath}>
           {t('backup.import')}
         </button>
       </div>
       {notification.isOpen && (
-        <p style={{ color: notification.message.includes('Failed') ? 'red' : 'green' }}>
+        <span className={notification.message.includes('Failed') ? 'error status' : 'success status'}>
           {notification.message}
-        </p>
+        </span>
       )}
     </div>
   );

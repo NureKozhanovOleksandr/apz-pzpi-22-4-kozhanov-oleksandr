@@ -250,13 +250,14 @@
     "loadingData": "Loading data..."
   },
   "backup": {
-    "title": "Backup Manager",
+    "title": "Backup",
     "export": "Export",
     "import": "Import",
     "enterPath": "Enter directory path",
     "exportSuccess": "Backup exported successfully",
     "exportFailed": "Failed to export backup",
     "importSuccess": "Backup imported successfully",
-    "importFailed": "Failed to import backup"
+    "importFailed": "Failed to import backup",
+    "selectFolder": "Select folder"
   }
 }

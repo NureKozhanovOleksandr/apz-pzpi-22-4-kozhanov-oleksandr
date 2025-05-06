@@ -169,7 +169,6 @@
   justify-content: center;
 }
 
-.navigation .user-panel .user-header .accordion-content input,
 .navigation .user-panel .user-header .accordion-content button[type="submit"] {
   outline: none;
   border: none;
@@ -182,11 +181,6 @@
 .navigation .user-panel .user-header .accordion-content button[type="submit"] {
   margin-bottom: 1rem;
   background: #fcffd9;
-}
-
-.navigation .user-panel .user-header .accordion-content input {
-  padding: 0;
-  width: calc(100% - 2.8rem);
 }
 
 .navigation .user-panel .user-header .accordion-content input::placeholder {
