@@ -88,6 +88,7 @@
     "weight": "Вага",
     "owner": "Власник",
     "lastVisit": "Останній візит",
+    "code": "Код",
     "deleteAnimal": "Видалити",
     "animalDeleted": "Тварину успішно видалено",
     "deleteAnimalConfirmation": "Ви впевнені, що хочете видалити цю тварину?",

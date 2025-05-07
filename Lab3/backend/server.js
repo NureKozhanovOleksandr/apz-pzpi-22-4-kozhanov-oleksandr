@@ -41,7 +41,7 @@ app.use('/api/healthrecords', authMiddleware, healthRecordRoutes);
 app.use('/api/appointments', authMiddleware, appointmentRoutes);
 app.use('/api/vets', authMiddleware, vetRoutes);
 app.use('/api/owners', authMiddleware, ownerRoutes);
-app.use('/api/iot', authMiddleware, iotRoutes);
+app.use('/api/iot', iotRoutes);
 app.use('/api/backup', authMiddleware, backupRoutes);
 
 scheduleBackup();

@@ -24,8 +24,9 @@ const Animals = () => {
     { field: "weight", headerName: t("animals.weight") },
     { field: "owner", headerName: t("animals.owner") },
     { field: "lastVisit", headerName: t("animals.lastVisit") },
+    { field: "code", headerName: t("animals.code") },
   ];
-  
+
   if (userData?.role === 'vet') {
     columnDefs.push(
       {
@@ -104,6 +105,7 @@ const Animals = () => {
             lastVisit: animal.lastVisit
               ? new Date(animal.lastVisit).toLocaleDateString()
               : t("animals.noVisit"),
+            code: animal.code,
           }))
         }
         refreshKey={refreshKey}

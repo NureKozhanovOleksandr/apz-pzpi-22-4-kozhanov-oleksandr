@@ -88,6 +88,7 @@
     "weight": "Weight",
     "owner": "Owner",
     "lastVisit": "Last Visit",
+    "code": "Code",
     "deleteAnimal": "Delete",
     "animalDeleted": "Animal successfully deleted",
     "deleteAnimalConfirmation": "Are you sure you want to delete this animal?",

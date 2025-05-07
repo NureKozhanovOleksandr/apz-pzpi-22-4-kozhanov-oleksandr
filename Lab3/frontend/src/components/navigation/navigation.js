@@ -151,8 +151,10 @@ const Navigation = ({ changeLanguage }) => {
             />
             {isAccordionOpen && (
               <div className='accordion-content'>
-                <BackupManager />
-                <LanguageSwitcher changeLanguage={changeLanguage} />
+                {userData?.role === 'admin' && <BackupManager />}
+                <div className={userData?.role === 'vet' ? 'margin' : ''}>
+                  <LanguageSwitcher changeLanguage={changeLanguage} />
+                </div>
               </div>
             )}
           </div>
