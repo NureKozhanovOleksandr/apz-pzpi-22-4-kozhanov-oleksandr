@@ -5,10 +5,10 @@ require('dotenv').config();
 
 const createAdmin = async () => {
   try {
-    const hashedPassword = await bcrypt.hash('12345678', 10);
+    const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
 
     const admin = new User({
-      username: 'admin',
+      username: process.env.ADMIN_NAME,
       password: hashedPassword,
       role: 'admin',
     });

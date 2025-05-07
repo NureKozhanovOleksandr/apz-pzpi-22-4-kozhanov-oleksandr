@@ -1,0 +1,74 @@
+.backup-manager {
+  display: flex;
+  flex-direction: column;
+}
+
+.backup-manager span {
+  font-weight: 500;
+  margin: 1rem 0;
+  width: 100%;
+}
+
+.backup-manager button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: .3s;
+  height: 2rem;
+  border-radius: 0.5rem;
+}
+
+.backup-manager button:hover {
+  background-color: #45a049;
+}
+
+.backup-manager button:disabled {
+  background-color: #bcbcbc;
+  cursor: not-allowed;
+}
+
+.backup-manager .import-section {
+  margin: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.backup-manager .import-section .import-path-input {
+  padding: 0 1rem;
+  font-size: small;
+  outline: none;
+  border: none;
+  color: #333;
+  border-radius: 0.5rem;
+  height: 2rem;
+  font-family: Consolas;
+}
+
+.backup-manager .import-section .import-path-input::placeholder {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;;
+}
+
+.backup-manager .import-section .selected-path {
+  margin: 0 0.5rem;
+  color: #333;
+}
+
+.backup-manager .success {
+  color: green;
+  margin-top: 1rem;
+}
+
+.backup-manager .error {
+  color: red;
+  margin-top: 1rem;
+}
+
+.backup-manager .status {
+  width: 100%;
+  text-align: center;
+  margin-top: 0;
+}

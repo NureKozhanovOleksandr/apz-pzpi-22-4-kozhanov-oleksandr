@@ -32,15 +32,13 @@ const AppointmentForm = ({ initialData = null, onBack, onSuccess }) => {
       const formattedData = {
         animalId: initialData ? initialData.animalId : data.animalId,
         vetId: initialData ? initialData.vetId : data.vetId,
-        date: initialData ? initialData.date : data.date,
+        date: new Date(data.date),
         reason: data.reason,
         diagnosis: data.diagnosis || "",
         treatment: data.treatment || "",
         notes: data.notes || "",
         status: data.status,
       };
-
-      console.log("Formatted Data:", formattedData);
 
       if (initialData) {
         await api.put(`/appointments/${initialData._id}`, formattedData);
@@ -96,9 +94,11 @@ const AppointmentForm = ({ initialData = null, onBack, onSuccess }) => {
           },
           {
             name: "date",
-            type: "date",
+            type: "datetime-local",
             label: t("appointmentForm.date"),
-            defaultValue: initialData?.date || "",
+            defaultValue: initialData?.date
+              ? new Date(initialData.date).toISOString().slice(0, 16)
+              : "",
             validation: { required: t("appointmentForm.dateRequired") },
             showLabel: true,
           },

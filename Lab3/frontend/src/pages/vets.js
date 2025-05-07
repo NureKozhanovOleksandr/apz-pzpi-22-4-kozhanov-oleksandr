@@ -4,6 +4,7 @@ import api from "../configs/api";
 import Modal from "../components/modal";
 import VetForm from "../components/forms/vet";
 import { useTranslation } from "react-i18next";
+import { useAuth } from '../contexts/authContext';
 
 const Vets = () => {
   const { t } = useTranslation();
@@ -13,46 +14,52 @@ const Vets = () => {
   const [addVetModal, setAddVetModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const { userData } = useAuth();
 
   const columnDefs = [
     { field: "username", headerName: t("vets.username") },
     { field: "specialization", headerName: t("vets.specialization") },
     { field: "contactInfo", headerName: t("vets.contactInfo") },
     { field: "email", headerName: t("vets.email") },
-    {
-      field: "edit",
-      headerName: "",
-      cellRenderer: (params) => (
-        <button
-          className="row-btn edit"
-          onClick={() => {
-            setEditData(params.data);
-            setEditModal(true);
-          }}
-        >
-          {t("vets.edit")}
-        </button>
-      ),
-      width: 100,
-      filter: false,
-      cellStyle: { textAlign: "center" },
-    },
-    {
-      field: "delete",
-      headerName: "",
-      cellRenderer: (params) => (
-        <button
-          className="row-btn delete"
-          onClick={() => setConfirmModal({ isOpen: true, vetId: params.data.id })}
-        >
-          {t("vets.deleteVet")}
-        </button>
-      ),
-      width: 100,
-      filter: false,
-      cellStyle: { textAlign: "center" },
-    },
   ];
+
+  if (userData?.role === 'admin') {
+    columnDefs.push(
+      {
+        field: "edit",
+        headerName: "",
+        cellRenderer: (params) => (
+          <button
+            className="row-btn edit"
+            onClick={() => {
+              setEditData(params.data);
+              setEditModal(true);
+            }}
+          >
+            {t("vets.edit")}
+          </button>
+        ),
+        width: 100,
+        filter: false,
+        cellStyle: { textAlign: "center" },
+      },
+      {
+        field: "delete",
+        headerName: "",
+        cellRenderer: (params) => (
+          <button
+            className="row-btn delete"
+            onClick={() => setConfirmModal({ isOpen: true, vetId: params.data.id })}
+          >
+            {t("vets.deleteVet")}
+          </button>
+        ),
+        width: 100,
+        filter: false,
+        cellStyle: { textAlign: "center" },
+      }
+    );
+  }
 
   const handleDeleteVet = async (vetId) => {
     try {
@@ -92,7 +99,7 @@ const Vets = () => {
           }))
         }
         refreshKey={refreshKey}
-        showActions={true}
+        showActions={userData?.role === 'admin'}
         onAddClick={() => setAddVetModal(true)}
       />
       <Modal

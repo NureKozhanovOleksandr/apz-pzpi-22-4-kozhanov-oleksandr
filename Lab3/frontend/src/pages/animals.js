@@ -4,6 +4,7 @@ import api from "../configs/api";
 import Modal from "../components/modal";
 import { useTranslation } from "react-i18next";
 import AnimalForm from "../components/forms/animal";
+import { useAuth } from '../contexts/authContext';
 
 const Animals = () => {
   const { t } = useTranslation();
@@ -13,6 +14,7 @@ const Animals = () => {
   const [addAnimalModal, setAddAnimalModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [editData, setEditData] = useState(null);
+  const { userData } = useAuth();
 
   const columnDefs = [
     { field: "name", headerName: t("animals.name") },
@@ -22,40 +24,46 @@ const Animals = () => {
     { field: "weight", headerName: t("animals.weight") },
     { field: "owner", headerName: t("animals.owner") },
     { field: "lastVisit", headerName: t("animals.lastVisit") },
-    {
-      field: "edit",
-      headerName: "",
-      cellRenderer: (params) => (
-        <button
-          className="row-btn edit"
-          onClick={() => {
-            setEditData(params.data);
-            setEditModal(true);
-          }}
-        >
-          {t("animals.edit")}
-        </button>
-      ),
-      width: 100,
-      filter: false,
-      cellStyle: { textAlign: "center" },
-    },
-    {
-      field: "delete",
-      headerName: "",
-      cellRenderer: (params) => (
-        <button
-          className="row-btn delete"
-          onClick={() => setConfirmModal({ isOpen: true, animalId: params.data._id })}
-        >
-          {t("animals.deleteAnimal")}
-        </button>
-      ),
-      width: 100,
-      filter: false,
-      cellStyle: { textAlign: "center" },
-    },
+    { field: "code", headerName: t("animals.code") },
   ];
+
+  if (userData?.role === 'vet') {
+    columnDefs.push(
+      {
+        field: "edit",
+        headerName: "",
+        cellRenderer: (params) => (
+          <button
+            className="row-btn edit"
+            onClick={() => {
+              setEditData(params.data);
+              setEditModal(true);
+            }}
+          >
+            {t("animals.edit")}
+          </button>
+        ),
+        width: 100,
+        filter: false,
+        cellStyle: { textAlign: "center" },
+      },
+      {
+        field: "delete",
+        headerName: "",
+        cellRenderer: (params) => (
+          <button
+            className="row-btn delete"
+            onClick={() => setConfirmModal({ isOpen: true, animalId: params.data._id })}
+          >
+            {t("animals.deleteAnimal")}
+          </button>
+        ),
+        width: 100,
+        filter: false,
+        cellStyle: { textAlign: "center" },
+      }
+    );
+  }
 
   const handleDeleteAnimal = async (animalId) => {
     try {
@@ -97,10 +105,11 @@ const Animals = () => {
             lastVisit: animal.lastVisit
               ? new Date(animal.lastVisit).toLocaleDateString()
               : t("animals.noVisit"),
+            code: animal.code,
           }))
         }
         refreshKey={refreshKey}
-        showActions={true}
+        showActions={userData?.role === 'vet'}
         onAddClick={() => setAddAnimalModal(true)}
       />
 

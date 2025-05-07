@@ -1,4 +1,5 @@
 const express = require('express');
+const bcrypt = require('bcryptjs');
 const router = express.Router();
 const User = require('../Models/User');
 const authMiddleware = require('../middleware/authMiddleware');
@@ -40,15 +41,17 @@ router.get('/:id', authMiddleware, roleMiddleware(['admin', 'vet']), async (req,
 /**
  * @route POST /api/owners/add
  * @desc Create a new owner
- * @access Private (admin)
+ * @access Private (admin, vet)
  */
-router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+router.post('/add', authMiddleware, roleMiddleware(['admin', 'vet']), async (req, res) => {
   const { username, password, email, address } = req.body;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
     const newOwner = new User({
       username,
-      password,
+      password: hashedPassword,
       email,
       role: 'owner',
       ownerData: { address, animals: [] }
@@ -64,9 +67,9 @@ router.post('/add', authMiddleware, roleMiddleware(['admin']), async (req, res) 
 /**
  * @route PUT /api/owners/:id
  * @desc Update an owner
- * @access Private (admin)
+ * @access Private (admin, vet)
  */
-router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+router.put('/:id', authMiddleware, roleMiddleware(['admin', 'vet']), async (req, res) => {
   try {
     const { username, email, address } = req.body;
 
@@ -85,9 +88,9 @@ router.put('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) =
 /**
  * @route DELETE /api/owners/:id
  * @desc Delete an owner
- * @access Private (admin)
+ * @access Private (admin, vet)
  */
-router.delete('/:id', authMiddleware, roleMiddleware(['admin']), async (req, res) => {
+router.delete('/:id', authMiddleware, roleMiddleware(['admin', 'vet']), async (req, res) => {
   try {
     const owner = await User.findOne({ _id: req.params.id, role: 'owner' });
     if (!owner) return res.status(404).json({ message: 'Owner not found' });

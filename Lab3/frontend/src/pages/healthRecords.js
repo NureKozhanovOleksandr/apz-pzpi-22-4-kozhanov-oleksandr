@@ -12,7 +12,11 @@ const HealthRecords = () => {
 
   const columnDefs = [
     { field: "animal", headerName: t("healthRecords.animal") },
-    { field: "date", headerName: t("healthRecords.date") },
+    { 
+      field: "date", 
+      headerName: t("healthRecords.date"), 
+      valueFormatter: (params) => new Date(params.value).toLocaleString()
+    },
     { field: "temperature", headerName: t("healthRecords.temperature") },
     {
       field: "delete",
@@ -55,7 +59,7 @@ const HealthRecords = () => {
           data.map((record) => ({
             _id: record._id,
             animal: record.animalName,
-            date: new Date(record.date).toLocaleDateString(),
+            date: record.date,
             temperature: record.temperature || t("healthRecords.noTemperature"),
           }))
         }

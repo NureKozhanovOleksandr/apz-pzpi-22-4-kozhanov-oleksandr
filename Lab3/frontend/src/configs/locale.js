@@ -9,6 +9,17 @@ const resources = {
   ua: { translation: translationUA },
 };
 
+const directionMap = {
+  en: 'ltr',
+  ua: 'ltr',
+  ar: 'rtl',
+};
+
+const setDirection = (lng) => {
+  const direction = directionMap[lng] || 'ltr';
+  document.documentElement.dir = direction;
+};
+
 i18n
   .use(initReactI18next)
   .init({
@@ -19,5 +30,11 @@ i18n
       escapeValue: false,
     },
   });
+
+i18n.on('languageChanged', (lng) => {
+  setDirection(lng);
+});
+
+setDirection(i18n.language);
 
 export default i18n;
