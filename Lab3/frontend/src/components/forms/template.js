@@ -90,11 +90,6 @@ const FormTemplate = ({
             {errors[name] && <p className="error">{errors[name].message}</p>}
           </div>
         ))}
-        {isLogin && (
-          <div className='additional'>
-            <span className='forgot' onClick={onForgotPassword}>{t("login.forgotPassword")}</span>
-          </div>
-        )}
         <button type='submit'>{buttonText}</button>
       </form>
     </div>
