@@ -33,7 +33,7 @@ app.use('/api/vets', authMiddleware, vetRoutes);
 app.use('/api/owners', authMiddleware, ownerRoutes);
 app.use('/api/iot', iotRoutes);
 
-const PORT = process.env.PORT || 3000;
-app.listen(5000, '0.0.0.0', () => {
+const PORT = process.env.PORT;
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Server running on port: ${PORT}`);
 });
