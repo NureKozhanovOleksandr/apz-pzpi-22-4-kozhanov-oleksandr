@@ -30,7 +30,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 
 class AuthActivity : ComponentActivity() {
     private val client = OkHttpClient()
-    private val backendUrl = "http://10.0.2.2:5000/api"
+    private val backendUrl = "https://vetclinicbackend-e2b8c0a8fjfqegb0.northeurope-01.azurewebsites.net/api"
 
     companion object {
         private const val TAG = "AuthActivity"

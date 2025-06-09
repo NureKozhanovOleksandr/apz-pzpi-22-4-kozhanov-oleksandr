@@ -42,7 +42,7 @@ jspm_packages/
 .node_repl_history
 
 # dotenv environment variables file
-.env
+Lab3/backend/.env
 
 # Windows
 Thumbs.db

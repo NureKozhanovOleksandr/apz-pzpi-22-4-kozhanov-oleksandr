@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,7 +27,7 @@ import kotlin.coroutines.resume
 @OptIn(ExperimentalMaterial3Api::class)
 class VetsActivity : ComponentActivity() {
     private val client = OkHttpClient()
-    private val backendUrl = "http://10.0.2.2:5000/api"
+    private val backendUrl = "https://vetclinicbackend-e2b8c0a8fjfqegb0.northeurope-01.azurewebsites.net/api"
 
     companion object {
         private const val TAG = "VetsActivity"
@@ -58,6 +59,20 @@ class VetsActivity : ComponentActivity() {
                         .padding(padding),
                     contentPadding = PaddingValues(16.dp)
                 ) {
+                    if (vets.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .wrapContentSize(Alignment.Center)
+                            ) {
+                                Text(
+                                    text = "No items available",
+                                    fontSize = 18.sp
+                                )
+                            }
+                        }
+                    }
                     items(vets) { vet ->
                         Card(
                             modifier = Modifier

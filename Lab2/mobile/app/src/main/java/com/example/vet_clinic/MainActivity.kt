@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,7 +29,7 @@ import kotlin.coroutines.resume
 @OptIn(ExperimentalMaterial3Api::class)
 class MainActivity : ComponentActivity() {
     private val client = OkHttpClient()
-    private val backendUrl = "http://10.0.2.2:5000/api"
+    private val backendUrl = "https://vetclinicbackend-e2b8c0a8fjfqegb0.northeurope-01.azurewebsites.net/api"
 
     companion object {
         private const val TAG = "MainActivity"
@@ -60,6 +61,20 @@ class MainActivity : ComponentActivity() {
                         .padding(padding),
                     contentPadding = PaddingValues(16.dp)
                 ) {
+                    if (animals.isEmpty()) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .wrapContentSize(Alignment.Center)
+                            ) {
+                                Text(
+                                    text = "No items available",
+                                    fontSize = 18.sp
+                                )
+                            }
+                        }
+                    }
                     items(animals) { animal ->
                         Card(
                             modifier = Modifier
@@ -81,9 +96,6 @@ class MainActivity : ComponentActivity() {
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Weight", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(animal.weight?.toString() ?: "Not available", fontSize = 18.sp)
-                                Spacer(modifier = Modifier.height(12.dp))
-                                Text("Owner", fontSize = 16.sp, fontWeight = FontWeight.Bold)
-                                Text(animal.ownerUsername, fontSize = 18.sp)
                                 Spacer(modifier = Modifier.height(12.dp))
                                 Text("Last Visit", fontSize = 16.sp, fontWeight = FontWeight.Bold)
                                 Text(animal.lastVisit ?: "No visits", fontSize = 18.sp)
